@@ -1,38 +1,69 @@
 import Link from "next/link";
+import { testingIds } from "../../helpers";
 
 const userFirstName = "Jacob";
+
+const homeIds = testingIds.pages.home;
 
 export default function HomePage() {
     return (
         <main>
-            <h1>Home</h1>
-            <p>Hey there, {userFirstName}</p>
+            <h1 data-client-id={homeIds.title}>Home</h1>
+            <p data-client-id={homeIds.greeting}>Hey there, {userFirstName}</p>
             <section>
-                <div>
-                    <h2>Choose an activity</h2>
+                <div data-client-id={homeIds.chooseActivitySection}>
+                    <h2 data-client-id={homeIds.chooseActivitySectionTitle}>
+                        Choose an activity
+                    </h2>
                     <ul>
                         <li>
-                            <Link href="/selector">Use the selectors</Link>
+                            <Link
+                                href="/selector"
+                                data-client-id={homeIds.chooseSelectors}
+                            >
+                                Use the selectors
+                            </Link>
                         </li>
                         <li>
-                            <Link href="lists">See your lists</Link>
+                            <Link href="/lists" data-client-id={homeIds.chooseLists}>
+                                See your lists
+                            </Link>
                         </li>
                     </ul>
                 </div>
-                <div>
-                    <h2>Manage activities</h2>
+                <div data-client-id={homeIds.manageActivitiesSection}>
+                    <h2 data-client-id={homeIds.manageActivitiesSectionTitle}>
+                        Manage activities
+                    </h2>
                     <ul>
                         <li>
-                            <Link href="/activities/new">Add an activity</Link>
+                            <Link
+                                href="/activities/new"
+                                data-client-id={homeIds.addActivity}
+                            >
+                                Add an activity
+                            </Link>
                         </li>
                         <li>
-                            <Link href="/activities/edit">Edit your activities</Link>
+                            <Link
+                                href="/activities/edit"
+                                data-client-id={homeIds.editActivities}
+                            >
+                                Edit your activities
+                            </Link>
                         </li>
                         <li>
-                            <Link href="/categories/edit">Edit your categories</Link>
+                            <Link
+                                href="/categories/edit"
+                                data-client-id={homeIds.editCategories}
+                            >
+                                Edit your categories
+                            </Link>
                         </li>
                         <li>
-                            <Link href="/account">Your account</Link>
+                            <Link href="/account" data-client-id={homeIds.account}>
+                                Your account
+                            </Link>
                         </li>
                     </ul>
                 </div>

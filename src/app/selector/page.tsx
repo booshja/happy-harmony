@@ -1,6 +1,7 @@
 import { SelectorWrapper } from "../_components/Selector/SelectorWrapper";
 
 import { activities } from "../../../zzzAlgorithm/activities";
+import { testingIds } from "../../helpers";
 
 // async function getActivities() {
 //     const res = await fetch();
@@ -16,11 +17,14 @@ async function getActivities() {
     return activities;
 }
 
+const selectorIds = testingIds.pages.selector;
+
 export default async function SelectorPage() {
     const activities = await getActivities();
+
     return (
         <main>
-            <h1>Activity Selectors</h1>
+            <h1 data-client-id={selectorIds.title}>Activity Selectors</h1>
             <SelectorWrapper activities={activities} />
         </main>
     );
