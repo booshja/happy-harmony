@@ -1,4 +1,4 @@
-import { ACTIVITY_TIMES } from "../../../../helpers";
+import { ACTIVITY_TIMES, testingIds } from "../../../../helpers";
 import type { ActivityKeys, ActivityTime } from "../../../../types";
 import type { Dispatch, FormEvent, SetStateAction } from "react";
 
@@ -7,8 +7,13 @@ interface SelectTimeProps {
     setTime: Dispatch<SetStateAction<ActivityTime | null>>;
 }
 
-export const SelectTime = ({ handleNextStep, setTime }: SelectTimeProps): JSX.Element => {
-    const activityKeys = Object.keys(ACTIVITY_TIMES) as ActivityKeys[];
+const selectTimeIds = testingIds.selectors.time;
+
+export const SelectTime = ({
+    handleNextStep,
+    setTime,
+}: SelectTimeProps): JSX.Element => {
+    const activityTimeKeys = Object.keys(ACTIVITY_TIMES) as ActivityKeys[];
 
     const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -16,19 +21,33 @@ export const SelectTime = ({ handleNextStep, setTime }: SelectTimeProps): JSX.El
     };
 
     return (
-        <form onSubmit={(e) => handleSubmit(e)}>
-            <label htmlFor="time">Time</label>
-            <select required id="time" name="time" onChange={(e) => setTime(e.target.value as ActivityTime)}>
-                <option value="">--Select time--</option>
+        <form onSubmit={(e) => handleSubmit(e)} data-client-id={selectTimeIds.form}>
+            <label htmlFor="time" data-client-id={selectTimeIds.label}>
+                Time
+            </label>
+            <select
+                required
+                id="time"
+                name="time"
+                onChange={(e) => setTime(e.target.value as ActivityTime)}
+                data-client-id={selectTimeIds.select}
+            >
+                <option value="" data-client-id={selectTimeIds.selectOptions}>
+                    --Select time--
+                </option>
                 <optgroup label="Times">
-                    {activityKeys.map((time) => (
-                        <option key={time} value={ACTIVITY_TIMES[time]}>
+                    {activityTimeKeys.map((time) => (
+                        <option
+                            key={time}
+                            value={ACTIVITY_TIMES[time]}
+                            data-client-id={selectTimeIds.selectOptions}
+                        >
                             {ACTIVITY_TIMES[time]}
                         </option>
                     ))}
                 </optgroup>
             </select>
-            <button>Choose</button>
+            <button data-client-id={selectTimeIds.chooseButton}>Choose</button>
         </form>
     );
 };
