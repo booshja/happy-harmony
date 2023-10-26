@@ -26,8 +26,15 @@ export const RandomSelector = ({ activities }: RandomSelectorProps) => {
         setStep(steps[1]);
     };
 
+    const handleReset = () => {
+        setStep(steps[0]);
+        setTime(null);
+        setActivity(null);
+    };
+
     const determineActivity = () => {
         if (!time) return;
+
         const activity = getRandomActivity(activities, time);
         setActivity(activity);
     };
@@ -35,7 +42,9 @@ export const RandomSelector = ({ activities }: RandomSelectorProps) => {
     return (
         <>
             {step === "time" && <SelectTime setTime={setTime} handleNextStep={handleNextStep} />}
-            {step === "result" && activity && <SelectorResult activity={activity} selectorType="random" />}
+            {step === "result" && activity && (
+                <SelectorResult activity={activity} selectorType="random" handleReset={handleReset} />
+            )}
         </>
     );
 };

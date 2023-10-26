@@ -5,6 +5,9 @@ import type { Activity } from "../../../../types";
 
 import { Category } from "../../../../../zzzAlgorithm/activities";
 
+const mockReset = jest.fn();
+const resultIds = testingIds.selectors.result;
+
 describe("SelectorResult", () => {
     it("should render all elements correctly for Random Activity Selector", () => {
         const activity: Activity<Category> = {
@@ -13,12 +16,13 @@ describe("SelectorResult", () => {
             time: ACTIVITY_TIMES[60],
         };
 
-        render(<SelectorResult activity={activity} selectorType={"random"} />);
+        render(<SelectorResult activity={activity} selectorType={"random"} handleReset={mockReset} />);
 
-        expect(screen.getByTestId(testingIds.selectors.result.wrapper)).toBeInTheDocument();
-        expect(screen.getByTestId(testingIds.selectors.result.activity)).toBeInTheDocument();
-        expect(screen.getByTestId(testingIds.selectors.result.category)).toBeInTheDocument();
-        expect(screen.getByTestId(testingIds.selectors.result.time)).toBeInTheDocument();
+        expect(screen.getByTestId(resultIds.wrapper)).toBeInTheDocument();
+        expect(screen.getByTestId(resultIds.activity)).toBeInTheDocument();
+        expect(screen.getByTestId(resultIds.category)).toBeInTheDocument();
+        expect(screen.getByTestId(resultIds.time)).toBeInTheDocument();
+        expect(screen.getByTestId(resultIds.resetButton)).toBeInTheDocument();
 
         expect(screen.getByText(activity.name)).toBeInTheDocument();
         expect(screen.getByText(activity.category)).toBeInTheDocument();

@@ -18,6 +18,7 @@ export const RandomSelectorResult: Story = {
             time: ACTIVITY_TIMES[60],
         },
         selectorType: "random",
+        handleReset: () => console.log("Resetting..."),
     },
 };
 
@@ -29,6 +30,7 @@ export const CategorySelectorResult: Story = {
             time: ACTIVITY_TIMES[60],
         },
         selectorType: "category",
+        handleReset: () => console.log("Resetting..."),
     },
 };
 
@@ -52,5 +54,6 @@ export const ListSelectorResult: Story = {
             },
         ],
         selectorType: "list",
+        handleReset: () => console.log("Resetting..."),
     },
 };

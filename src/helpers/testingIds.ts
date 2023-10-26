@@ -9,6 +9,7 @@ export const testingIds = {
             category: "result-category",
             time: "result-time",
             listItem: "result-list-item",
+            resetButton: "result-reset-button",
         },
     },
 };
