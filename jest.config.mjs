@@ -30,6 +30,8 @@ const config = {
         "!**/.storybook/**",
         "!**/.next/**",
         "!**/.vscode/**",
+        "!**/lib/**",
+        "!**/types/**",
     ],
 };
 

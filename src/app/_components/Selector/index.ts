@@ -1,1 +1,1 @@
-export * from "./SelectTime";
+export * from "./SelectorWrapper";

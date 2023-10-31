@@ -5,19 +5,31 @@ import type { Category } from "../../../../../zzzAlgorithm/activities";
 
 export interface SelectorResultProps {
     selectorType: Selector;
-    activity?: Activity<Category>;
+    activity?: Activity<Category> | null;
     activityList?: Activity<Category>[];
     handleReset: () => void;
 }
 
 const resultIds = testingIds.selectors.result;
 
-export const SelectorResult = ({ activity, activityList, selectorType, handleReset }: SelectorResultProps) => {
+export const SelectorResult = ({
+    activity,
+    activityList,
+    selectorType,
+    handleReset,
+}: SelectorResultProps) => {
     const { RANDOM_SELECTOR, CATEGORY_SELECTOR, LIST_SELECTOR } = SELECTORS;
+
+    const isSingleActivity =
+        selectorType === RANDOM_SELECTOR || selectorType === CATEGORY_SELECTOR;
+    const isList = selectorType === LIST_SELECTOR;
+    const isRandom = selectorType === RANDOM_SELECTOR;
+
+    const noResult = !activity && !activityList;
 
     return (
         <div data-client-id={resultIds.wrapper}>
-            {selectorType === (RANDOM_SELECTOR || CATEGORY_SELECTOR) && activity && (
+            {isSingleActivity && activity && (
                 <>
                     <p data-client-id={resultIds.activity}>
                         <span>Activity:</span> {activity.name}
@@ -30,7 +42,7 @@ export const SelectorResult = ({ activity, activityList, selectorType, handleRes
                     </p>
                 </>
             )}
-            {selectorType === LIST_SELECTOR && activityList && (
+            {isList && activityList && (
                 <>
                     <ul>
                         {activityList.map((activity, idx) => (
@@ -48,6 +60,12 @@ export const SelectorResult = ({ activity, activityList, selectorType, handleRes
                         ))}
                     </ul>
                 </>
+            )}
+            {noResult && (
+                <p data-client-id={resultIds.noResult}>
+                    Uh oh, looks like no activities matched your{" "}
+                    {isRandom ? "choice" : "choices"}!
+                </p>
             )}
             <button onClick={handleReset} data-client-id={resultIds.resetButton}>
                 Reset

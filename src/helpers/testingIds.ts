@@ -7,7 +7,9 @@ export const testingIds = {
         random: {
             title: "random-selector-title",
         },
-        category: {},
+        category: {
+            title: "category-selector-title",
+        },
         list: {},
         time: {
             form: "time-form",
@@ -16,6 +18,13 @@ export const testingIds = {
             selectOptions: "time-select-options",
             chooseButton: "time-choose-button",
         },
+        categories: {
+            form: "categories-form",
+            label: "categories-label",
+            select: "categories-select",
+            selectOptions: "categories-select-options",
+            chooseButton: "categories-choose-button",
+        },
         result: {
             wrapper: "random-result-wrapper",
             activity: "result-activity",
@@ -23,6 +32,7 @@ export const testingIds = {
             time: "result-time",
             listItem: "result-list-item",
             resetButton: "result-reset-button",
+            noResult: "result-no-result",
         },
     },
     pages: {

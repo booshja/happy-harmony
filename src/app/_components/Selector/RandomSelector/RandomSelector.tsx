@@ -3,7 +3,13 @@
 import { useState } from "react";
 import { SelectTime } from "../SelectTime";
 import { SelectorResult } from "../SelectorResult";
-import { getRandomActivity, testingIds } from "../../../../helpers";
+import {
+    getRandomActivity,
+    testingIds,
+    RANDOM_SELECTOR_STEPS,
+    type RandomSelectorSteps,
+    SELECTORS,
+} from "../../../../helpers";
 import type { Activity, ActivityTime } from "../../../../types";
 
 import { Category } from "../../../../../zzzAlgorithm/activities";
@@ -13,19 +19,19 @@ interface RandomSelectorProps {
 }
 
 export const RandomSelector = ({ activities }: RandomSelectorProps) => {
-    const steps = ["time", "result"] as const;
-
-    const [step, setStep] = useState<(typeof steps)[number]>(steps[0]);
+    const [step, setStep] = useState<RandomSelectorSteps[number]>(
+        RANDOM_SELECTOR_STEPS[0]
+    );
     const [time, setTime] = useState<ActivityTime | null>(null);
     const [activity, setActivity] = useState<Activity<Category> | null>(null);
 
     const handleNextStep = () => {
         determineActivity();
-        setStep(steps[1]);
+        setStep(RANDOM_SELECTOR_STEPS[1]);
     };
 
     const handleReset = () => {
-        setStep(steps[0]);
+        setStep(RANDOM_SELECTOR_STEPS[0]);
         setTime(null);
         setActivity(null);
     };
@@ -33,7 +39,7 @@ export const RandomSelector = ({ activities }: RandomSelectorProps) => {
     const determineActivity = () => {
         if (!time) return;
 
-        const activity = getRandomActivity(activities, time);
+        const activity = getRandomActivity({ activities, time });
         setActivity(activity);
     };
 
@@ -48,7 +54,7 @@ export const RandomSelector = ({ activities }: RandomSelectorProps) => {
             {step === "result" && activity && (
                 <SelectorResult
                     activity={activity}
-                    selectorType="random"
+                    selectorType={SELECTORS.RANDOM_SELECTOR}
                     handleReset={handleReset}
                 />
             )}

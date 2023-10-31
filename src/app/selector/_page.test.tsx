@@ -10,6 +10,6 @@ describe("Selector Page", () => {
         await renderServerComponent(<SelectorPage />);
 
         expect(screen.getByTestId(selectorIds.title)).toBeInTheDocument();
-        expect(screen.getByText("Random Activity Selector")).toBeInTheDocument();
+        expect(screen.getByText("Activity Selector")).toBeInTheDocument();
     });
 });

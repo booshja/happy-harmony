@@ -14,3 +14,9 @@ export const SELECTORS = {
     CATEGORY_SELECTOR: "category",
     LIST_SELECTOR: "list",
 };
+
+export const SELECTOR_STEPS = ["category", "time", "result"] as const;
+export const RANDOM_SELECTOR_STEPS = ["time", "result"] as const;
+
+export type SelectorSteps = typeof SELECTOR_STEPS;
+export type RandomSelectorSteps = typeof RANDOM_SELECTOR_STEPS;
