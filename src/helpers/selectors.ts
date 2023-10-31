@@ -8,7 +8,12 @@ export interface GetActivity {
     activities: Activity<Category>[];
 }
 
-interface GetRandomActivity {
+export interface GetRandomActivity {
+    activities: Activity<Category>[];
+    time: ActivityTime;
+}
+
+export interface GetActivityList {
     activities: Activity<Category>[];
     time: ActivityTime;
 }
@@ -32,4 +37,13 @@ export const getRandomActivity = ({ activities, time }: GetRandomActivity) => {
 
     const randomIndex = Math.floor(Math.random() * filteredActivities.length);
     return filteredActivities[randomIndex];
+};
+
+export const getActivityList = ({ activities, time }: GetActivityList) => {
+    const filteredActivities = activities.filter((activity) => {
+        return activity.time === time;
+    });
+    if (filteredActivities.length === 0) return [];
+
+    return filteredActivities;
 };

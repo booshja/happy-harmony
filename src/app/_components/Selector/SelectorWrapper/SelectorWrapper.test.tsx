@@ -56,17 +56,19 @@ describe("SelectorWrapper", () => {
         await user.click(getAllByTestId(wrapperIds.selectorButton)[0]);
 
         expect(getByTestId(selectorsIds.categories.form)).toBeInTheDocument();
+        expect(getByTestId(selectorsIds.category.title)).toBeInTheDocument();
     });
 
-    // it("should render the ListSelector component when the Random button is clicked", async () => {
-    //     const user = userEvent.setup();
+    it("should render the ListSelector component when the List button is clicked", async () => {
+        const user = userEvent.setup();
 
-    //     const { getByTestId, getAllByTestId, findByTestId } = render(
-    //         <SelectorWrapper activities={activities} />
-    //     );
+        const { getByTestId, getAllByTestId } = render(
+            <SelectorWrapper activities={activities} categories={categories} />
+        );
 
-    //     await user.click(getAllByTestId(wrapperIds.selectorButton)[2]);
+        await user.click(getAllByTestId(wrapperIds.selectorButton)[2]);
 
-    //     expect(screen.getByTestId(selectorsIds.time.form)).toBeInTheDocument();
-    // });
+        expect(getByTestId(selectorsIds.time.form)).toBeInTheDocument();
+        expect(getByTestId(selectorsIds.list.title)).toBeInTheDocument();
+    });
 });

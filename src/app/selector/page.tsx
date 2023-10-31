@@ -29,7 +29,7 @@ export default async function SelectorPage() {
 
     return (
         <main>
-            <h1 data-client-id={selectorIds.title}>Activity Selectors</h1>
+            <h2 data-client-id={selectorIds.title}>Activity Selectors</h2>
             <SelectorWrapper activities={activities} categories={categories} />
         </main>
     );

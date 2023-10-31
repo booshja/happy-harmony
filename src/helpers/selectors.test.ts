@@ -1,7 +1,7 @@
-import { activities } from "./../../zzzAlgorithm/activities";
-import { Category } from "../../zzzAlgorithm/activities";
 import { Activity } from "../types";
-import { ACTIVITY_TIMES, getActivity, getRandomActivity } from "./";
+import { ACTIVITY_TIMES, getActivity, getRandomActivity, getActivityList } from "./";
+
+import { Category } from "../../zzzAlgorithm/activities";
 
 describe("Selectors", () => {
     describe("getActivity", () => {
@@ -34,12 +34,12 @@ describe("Selectors", () => {
         it("returns a random activity", () => {
             const activities: Activity<Category>[] = [
                 {
-                    category: "Music",
+                    category: "Coding",
                     time: ACTIVITY_TIMES[0],
                     name: "Write a test",
                 },
                 {
-                    category: "Music",
+                    category: "Coding",
                     time: ACTIVITY_TIMES[0],
                     name: "Write another test",
                 },
@@ -59,6 +59,52 @@ describe("Selectors", () => {
                 time: ACTIVITY_TIMES[60],
             });
             expect(activity).toBeNull();
+        });
+    });
+
+    describe("getActivityList", () => {
+        it("returns a list of activities", () => {
+            const activities: Activity<Category>[] = [
+                {
+                    category: "Coding",
+                    time: ACTIVITY_TIMES[0],
+                    name: "Write a test",
+                },
+                {
+                    category: "Coding",
+                    time: ACTIVITY_TIMES[5],
+                    name: "Write another test",
+                },
+                {
+                    category: "Coding",
+                    time: ACTIVITY_TIMES[10],
+                    name: "Write yet another test",
+                },
+                {
+                    category: "Coding",
+                    time: ACTIVITY_TIMES[10],
+                    name: "Oh look another test",
+                },
+                {
+                    category: "Coding",
+                    time: ACTIVITY_TIMES[10],
+                    name: "That's a lot of tests",
+                },
+            ];
+            const time = ACTIVITY_TIMES[10];
+            const activityList = getActivityList({ activities, time });
+
+            expect(activityList).toHaveLength(3);
+            expect(activityList).toEqual(activities.slice(2));
+        });
+
+        it("returns empty array if there are not matching activities", () => {
+            const activities: Activity<Category>[] = [];
+            const activity = getActivityList({
+                activities,
+                time: ACTIVITY_TIMES[60],
+            });
+            expect(activity).toEqual([]);
         });
     });
 });

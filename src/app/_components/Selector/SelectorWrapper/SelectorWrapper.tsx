@@ -7,6 +7,7 @@ import { SELECTORS, testingIds } from "../../../../helpers";
 import type { Activity, Selector } from "../../../../types";
 
 import { Category } from "../../../../../zzzAlgorithm/activities";
+import { ListSelector } from "../ListSelector";
 
 export interface SelectorWrapperProps {
     activities: Activity<Category>[];
@@ -45,7 +46,7 @@ export const SelectorWrapper = ({ activities, categories }: SelectorWrapperProps
             {selector === CATEGORY_SELECTOR && (
                 <CategorySelector activities={activities} categories={categories} />
             )}
-            {selector === LIST_SELECTOR && <div>List</div>}
+            {selector === LIST_SELECTOR && <ListSelector activities={activities} />}
         </div>
     );
 };

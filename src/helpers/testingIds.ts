@@ -10,7 +10,9 @@ export const testingIds = {
         category: {
             title: "category-selector-title",
         },
-        list: {},
+        list: {
+            title: "list-selector-title",
+        },
         time: {
             form: "time-form",
             label: "time-label",
