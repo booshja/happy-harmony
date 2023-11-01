@@ -1,13 +1,18 @@
 "use client";
 
-import { useState } from "react";
-import { RandomSelector } from "../RandomSelector";
 import { CategorySelector } from "../CategorySelector";
+import { ListSelector } from "../ListSelector";
+import { RandomSelector } from "../RandomSelector";
 import { SELECTORS, testingIds } from "../../../../helpers";
+import {
+    SelectorWrapperButtonStyled,
+    SelectorWrapperButtonsContainerStyled,
+    SelectorWrapperStyled,
+} from "./SelectorWrapperStyled";
+import { useState } from "react";
 import type { Activity, Selector } from "../../../../types";
 
 import { Category } from "../../../../../zzzAlgorithm/activities";
-import { ListSelector } from "../ListSelector";
 
 export interface SelectorWrapperProps {
     activities: Activity<Category>[];
@@ -21,32 +26,34 @@ export const SelectorWrapper = ({ activities, categories }: SelectorWrapperProps
     const [selector, setSelector] = useState<Selector>(CATEGORY_SELECTOR);
 
     return (
-        <div>
-            <section data-client-id={wrapperIds.buttonSection}>
-                <button
+        <SelectorWrapperStyled>
+            <SelectorWrapperButtonsContainerStyled
+                data-client-id={wrapperIds.buttonSection}
+            >
+                <SelectorWrapperButtonStyled
                     onClick={() => setSelector(CATEGORY_SELECTOR)}
                     data-client-id={wrapperIds.selectorButton}
                 >
                     Individual Activity
-                </button>
-                <button
+                </SelectorWrapperButtonStyled>
+                <SelectorWrapperButtonStyled
                     onClick={() => setSelector(RANDOM_SELECTOR)}
                     data-client-id={wrapperIds.selectorButton}
                 >
                     Random Activity
-                </button>
-                <button
+                </SelectorWrapperButtonStyled>
+                <SelectorWrapperButtonStyled
                     onClick={() => setSelector(LIST_SELECTOR)}
                     data-client-id={wrapperIds.selectorButton}
                 >
                     List of Activities
-                </button>
-            </section>
+                </SelectorWrapperButtonStyled>
+            </SelectorWrapperButtonsContainerStyled>
             {selector === RANDOM_SELECTOR && <RandomSelector activities={activities} />}
             {selector === CATEGORY_SELECTOR && (
                 <CategorySelector activities={activities} categories={categories} />
             )}
             {selector === LIST_SELECTOR && <ListSelector activities={activities} />}
-        </div>
+        </SelectorWrapperStyled>
     );
 };

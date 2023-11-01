@@ -1,5 +1,11 @@
-import { Dispatch, SetStateAction } from "react";
+import {
+    CategoryFormButtonStyled,
+    CategoryFormInputLabelStyled,
+    CategoryFormSelectStyled,
+    CategoryFormStyled,
+} from "./SelectCategoryStyled";
 import { testingIds } from "../../../../helpers";
+import type { Dispatch, SetStateAction } from "react";
 
 import { Category } from "../../../../../zzzAlgorithm/activities";
 
@@ -24,11 +30,17 @@ export const SelectCategory = ({
     };
 
     return (
-        <form onSubmit={(e) => handleSubmit(e)} data-client-id={categoriesIds.form}>
-            <label htmlFor="category" data-client-id={categoriesIds.label}>
+        <CategoryFormStyled
+            onSubmit={(e) => handleSubmit(e)}
+            data-client-id={categoriesIds.form}
+        >
+            <CategoryFormInputLabelStyled
+                htmlFor="category"
+                data-client-id={categoriesIds.label}
+            >
                 Category
-            </label>
-            <select
+            </CategoryFormInputLabelStyled>
+            <CategoryFormSelectStyled
                 required
                 id="category"
                 name="category"
@@ -49,8 +61,10 @@ export const SelectCategory = ({
                         </option>
                     ))}
                 </optgroup>
-            </select>
-            <button data-client-id={categoriesIds.chooseButton}>Choose</button>
-        </form>
+            </CategoryFormSelectStyled>
+            <CategoryFormButtonStyled data-client-id={categoriesIds.chooseButton}>
+                Choose
+            </CategoryFormButtonStyled>
+        </CategoryFormStyled>
     );
 };

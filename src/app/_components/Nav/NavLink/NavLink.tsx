@@ -1,5 +1,3 @@
-"use client";
-
 import { NavLinkStyled } from "./NavLinkStyled";
 
 export interface NavLinkProps {

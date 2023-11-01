@@ -1,16 +1,17 @@
 "use client";
 
-import { useState } from "react";
 import { SelectTime } from "../SelectTime";
 import { SelectCategory } from "../SelectCategory";
-import { SelectorResult } from "../SelectorResult";
 import {
-    getActivity,
-    testingIds,
     SELECTOR_STEPS,
     SELECTORS,
     type SelectorSteps,
+    getActivity,
+    testingIds,
 } from "../../../../helpers";
+import { SelectorResult } from "../SelectorResult";
+import { SelectorTitleStyled } from "../SelectorStyled";
+import { useState } from "react";
 import type { Activity, ActivityTime } from "../../../../types";
 
 import type { Category } from "../../../../../zzzAlgorithm/activities";
@@ -56,7 +57,9 @@ export const CategorySelector = ({ activities, categories }: CategorySelectorPro
 
     return (
         <>
-            <h1 data-client-id={categoryIds.title}>Activity Selector</h1>
+            <SelectorTitleStyled data-client-id={categoryIds.title}>
+                Activity Selector
+            </SelectorTitleStyled>
             {step === "time" && (
                 <SelectTime setTime={setTime} handleNextStep={handleNextStep} />
             )}

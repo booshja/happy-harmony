@@ -1,10 +1,10 @@
-import { SelectorWrapper } from "../_components";
+import { SelectorPage } from "./_SelectorPage";
 
 import {
     activities,
     categories as importedCategories,
 } from "../../../zzzAlgorithm/activities";
-import { testingIds } from "../../helpers";
+const categories = [...importedCategories];
 
 // async function getData() {
 //     const res = await fetch();
@@ -16,21 +16,12 @@ import { testingIds } from "../../helpers";
 //     return res.json();
 // }
 
-const categories = [...importedCategories];
-
 async function getData() {
     return { activities, categories };
 }
 
-const selectorIds = testingIds.pages.selector;
-
-export default async function SelectorPage() {
+export default async function SelectorsPage() {
     const { activities, categories } = await getData();
 
-    return (
-        <main>
-            <h2 data-client-id={selectorIds.title}>Activity Selectors</h2>
-            <SelectorWrapper activities={activities} categories={categories} />
-        </main>
-    );
+    return <SelectorPage activities={activities} categories={categories} />;
 }

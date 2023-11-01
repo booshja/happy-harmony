@@ -1,5 +1,7 @@
-import Link from "next/link";
+"use client";
+
 import styled from "styled-components";
+import Link from "next/link";
 
 const HomePageStyled = styled.main`
     display: flex;
