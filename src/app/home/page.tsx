@@ -13,12 +13,12 @@ export default function HomePage() {
             <section>
                 <div data-client-id={homeIds.chooseActivitySection}>
                     <h2 data-client-id={homeIds.chooseActivitySectionTitle}>
-                        Choose an activity
+                        Activities
                     </h2>
                     <ul>
                         <li>
                             <Link
-                                href="/selector"
+                                href="/selectors"
                                 data-client-id={homeIds.chooseSelectors}
                             >
                                 Use the selectors
@@ -33,7 +33,7 @@ export default function HomePage() {
                 </div>
                 <div data-client-id={homeIds.manageActivitiesSection}>
                     <h2 data-client-id={homeIds.manageActivitiesSectionTitle}>
-                        Manage activities
+                        Manage
                     </h2>
                     <ul>
                         <li>

@@ -64,4 +64,15 @@ export const testingIds = {
             gridItemDescription: "landing-grid-item-description",
         },
     },
+    components: {
+        navbar: {
+            logo: "navbar-logo",
+            list: "navbar-list",
+            listItem: "navbar-list-item",
+            homeLink: "navbar-home-link",
+            selectorsLink: "navbar-selectors-link",
+            accountLink: "navbar-account-link",
+            logOutButton: "navbar-log-out-button",
+        },
+    },
 };

@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import PlausibleProvider from "next-plausible";
 import { Inter } from "next/font/google";
 import StyledComponentsRegistry from "../lib/registry";
+import { Navbar } from "./_components";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -18,7 +19,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <PlausibleProvider domain="happyharmony.dev" />
             </head>
             <body className={inter.className}>
-                <StyledComponentsRegistry>{children}</StyledComponentsRegistry>
+                <StyledComponentsRegistry>
+                    <Navbar />
+                    {children}
+                </StyledComponentsRegistry>
             </body>
         </html>
     );
