@@ -13,6 +13,7 @@
         "build-storybook": "storybook build"
     },
     "dependencies": {
+        "@auth0/nextjs-auth0": "^3.4.0",
         "i18next": "^23.5.1",
         "i18next-resources-to-backend": "^1.1.4",
         "mongodb": "^6.1.0",

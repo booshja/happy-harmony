@@ -1,3 +1,11 @@
+import {
+    ResultActivityButtonStyled,
+    ResultActivityTextSpanStyled,
+    ResultActivityTextStyled,
+    ResultContainerStyled,
+    ResultListStyled,
+    SingleResultContainerStyled,
+} from "./SelectorResultStyled";
 import { SELECTORS, testingIds } from "../../../../helpers";
 import type { Activity, Selector } from "../../../../types";
 
@@ -26,50 +34,81 @@ export const SelectorResult = ({
     const isRandom = selectorType === RANDOM_SELECTOR;
 
     const noResult = !activity && !activityList;
+    const numActivities = activityList?.length;
 
     return (
-        <div data-client-id={resultIds.wrapper}>
+        <ResultContainerStyled data-client-id={resultIds.wrapper}>
             {isSingleActivity && activity && (
-                <>
-                    <p data-client-id={resultIds.activity}>
-                        <span>Activity:</span> {activity.name}
-                    </p>
-                    <p data-client-id={resultIds.category}>
-                        <span>Category:</span> {activity.category}
-                    </p>
-                    <p data-client-id={resultIds.time}>
-                        <span>Time:</span> {activity.time}
-                    </p>
-                </>
+                <SingleResultContainerStyled>
+                    <ResultActivityTextStyled data-client-id={resultIds.activity}>
+                        <ResultActivityTextSpanStyled>
+                            Activity:
+                        </ResultActivityTextSpanStyled>{" "}
+                        {activity.name}
+                    </ResultActivityTextStyled>
+                    <ResultActivityTextStyled data-client-id={resultIds.category}>
+                        <ResultActivityTextSpanStyled>
+                            Category:
+                        </ResultActivityTextSpanStyled>{" "}
+                        {activity.category}
+                    </ResultActivityTextStyled>
+                    <ResultActivityTextStyled data-client-id={resultIds.time}>
+                        <ResultActivityTextSpanStyled>
+                            Time:
+                        </ResultActivityTextSpanStyled>{" "}
+                        {activity.time}
+                    </ResultActivityTextStyled>
+                </SingleResultContainerStyled>
             )}
             {isList && activityList && (
                 <>
-                    <ul>
+                    <ResultActivityTextStyled data-client-id={""}>
+                        {numActivities} activities matched your choices:
+                    </ResultActivityTextStyled>
+                    <ResultListStyled>
                         {activityList.map((activity, idx) => (
                             <li key={idx} data-client-id={resultIds.listItem}>
-                                <p data-client-id={resultIds.activity}>
-                                    <span>Activity:</span> {activity.name}
-                                </p>
-                                <p data-client-id={resultIds.category}>
-                                    <span>Category:</span> {activity.category}
-                                </p>
-                                <p data-client-id={resultIds.time}>
-                                    <span>Time:</span> {activity.time}
-                                </p>
+                                <ResultActivityTextStyled
+                                    data-client-id={resultIds.activity}
+                                >
+                                    <ResultActivityTextSpanStyled>
+                                        Activity:
+                                    </ResultActivityTextSpanStyled>{" "}
+                                    {activity.name}
+                                </ResultActivityTextStyled>
+                                <ResultActivityTextStyled
+                                    data-client-id={resultIds.category}
+                                >
+                                    <ResultActivityTextSpanStyled>
+                                        Category:
+                                    </ResultActivityTextSpanStyled>{" "}
+                                    {activity.category}
+                                </ResultActivityTextStyled>
+                                <ResultActivityTextStyled
+                                    data-client-id={resultIds.time}
+                                >
+                                    <ResultActivityTextSpanStyled>
+                                        Time:
+                                    </ResultActivityTextSpanStyled>{" "}
+                                    {activity.time}
+                                </ResultActivityTextStyled>
                             </li>
                         ))}
-                    </ul>
+                    </ResultListStyled>
                 </>
             )}
             {noResult && (
-                <p data-client-id={resultIds.noResult}>
+                <ResultActivityTextStyled data-client-id={resultIds.noResult}>
                     Uh oh, looks like no activities matched your{" "}
                     {isRandom ? "choice" : "choices"}!
-                </p>
+                </ResultActivityTextStyled>
             )}
-            <button onClick={handleReset} data-client-id={resultIds.resetButton}>
+            <ResultActivityButtonStyled
+                onClick={handleReset}
+                data-client-id={resultIds.resetButton}
+            >
                 Reset
-            </button>
-        </div>
+            </ResultActivityButtonStyled>
+        </ResultContainerStyled>
     );
 };

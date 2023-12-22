@@ -4,6 +4,7 @@ import PlausibleProvider from "next-plausible";
 import { Inter } from "next/font/google";
 import StyledComponentsRegistry from "../lib/registry";
 import { Navbar } from "./_components";
+import { UserProvider } from "@auth0/nextjs-auth0/client";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -18,12 +19,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <head>
                 <PlausibleProvider domain="happyharmony.dev" />
             </head>
-            <body className={inter.className}>
-                <StyledComponentsRegistry>
-                    <Navbar />
-                    {children}
-                </StyledComponentsRegistry>
-            </body>
+            <UserProvider>
+                <body className={inter.className}>
+                    <StyledComponentsRegistry>
+                        <Navbar />
+                        {children}
+                    </StyledComponentsRegistry>
+                </body>
+            </UserProvider>
         </html>
     );
 }

@@ -1,4 +1,10 @@
 import { ACTIVITY_TIMES, testingIds } from "../../../../helpers";
+import {
+    TimeFormButtonStyled,
+    TimeFormInputLabelStyled,
+    TimeFormSelectStyled,
+    TimeFormStyled,
+} from "./SelectTimeStyled";
 import type { ActivityKeys, ActivityTime } from "../../../../types";
 import type { Dispatch, FormEvent, SetStateAction } from "react";
 
@@ -21,11 +27,17 @@ export const SelectTime = ({
     };
 
     return (
-        <form onSubmit={(e) => handleSubmit(e)} data-client-id={selectTimeIds.form}>
-            <label htmlFor="time" data-client-id={selectTimeIds.label}>
-                Time
-            </label>
-            <select
+        <TimeFormStyled
+            onSubmit={(e) => handleSubmit(e)}
+            data-client-id={selectTimeIds.form}
+        >
+            <TimeFormInputLabelStyled
+                htmlFor="time"
+                data-client-id={selectTimeIds.label}
+            >
+                Select how long you&apos;d like to spend on this activity
+            </TimeFormInputLabelStyled>
+            <TimeFormSelectStyled
                 required
                 id="time"
                 name="time"
@@ -46,8 +58,10 @@ export const SelectTime = ({
                         </option>
                     ))}
                 </optgroup>
-            </select>
-            <button data-client-id={selectTimeIds.chooseButton}>Choose</button>
-        </form>
+            </TimeFormSelectStyled>
+            <TimeFormButtonStyled data-client-id={selectTimeIds.chooseButton}>
+                Choose
+            </TimeFormButtonStyled>
+        </TimeFormStyled>
     );
 };

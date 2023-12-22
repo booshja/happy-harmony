@@ -52,9 +52,15 @@ export const Navbar = ({}: NavbarProps) => {
                         </NavLink>
                     </li>
                     <li data-client-id={navIds.listItem}>
-                        <LogOutButtonStyled data-client-id={navIds.logOutButton}>
+                        <a href="/api/auth/login" data-clientid="">
+                            Log In
+                        </a>
+                        {/* <LogOutButtonStyled data-client-id={navIds.logOutButton}>
                             Log out
-                        </LogOutButtonStyled>
+                        </LogOutButtonStyled> */}
+                        <a href="/api/auth/logout" data-clientid="">
+                            Log out
+                        </a>
                     </li>
                 </NavListStyled>
             </nav>

@@ -15,13 +15,7 @@
                 "plugin:storybook/recommended",
                 "prettier"
             ],
-            "plugins": [
-                "import",
-                "jest",
-                "typescript-sort-keys",
-                "unused-imports"
-            ],
-            "rules": {}
+            "plugins": ["import", "jest", "typescript-sort-keys", "unused-imports"]
         },
         {
             "files": ["*.ts", "*.tsx"],

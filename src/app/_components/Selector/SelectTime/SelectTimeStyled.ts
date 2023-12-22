@@ -2,22 +2,22 @@
 
 import styled from "styled-components";
 
-const CategoryFormStyled = styled.form`
+const TimeFormStyled = styled.form`
     display: flex;
     flex-direction: column;
     gap: 16px;
     width: 400px;
 `;
 
-const CategoryFormSelectStyled = styled.select`
+const TimeFormSelectStyled = styled.select`
     border: 2px solid #000000;
     border-radius: 8px;
     padding: 8px;
 `;
 
-const CategoryFormInputLabelStyled = styled.label``;
+const TimeFormInputLabelStyled = styled.label``;
 
-const CategoryFormButtonStyled = styled.button`
+const TimeFormButtonStyled = styled.button`
     border: 2px solid #000000;
     border-radius: 8px;
     background-color: transparent;
@@ -30,8 +30,8 @@ const CategoryFormButtonStyled = styled.button`
 `;
 
 export {
-    CategoryFormButtonStyled,
-    CategoryFormInputLabelStyled,
-    CategoryFormSelectStyled,
-    CategoryFormStyled,
+    TimeFormButtonStyled,
+    TimeFormInputLabelStyled,
+    TimeFormSelectStyled,
+    TimeFormStyled,
 };

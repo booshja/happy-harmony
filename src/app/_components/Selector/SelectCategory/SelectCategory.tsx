@@ -38,7 +38,7 @@ export const SelectCategory = ({
                 htmlFor="category"
                 data-client-id={categoriesIds.label}
             >
-                Category
+                Choose a Category
             </CategoryFormInputLabelStyled>
             <CategoryFormSelectStyled
                 required
