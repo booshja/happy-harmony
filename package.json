@@ -1,25 +1,55 @@
 {
-  "name": "happy-harmony-v2",
-  "version": "0.1.0",
-  "private": true,
-  "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
-  },
-  "dependencies": {
-    "react": "19.1.0",
-    "react-dom": "19.1.0",
-    "next": "15.4.4"
-  },
-  "devDependencies": {
-    "typescript": "^5",
-    "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
-    "eslint": "^9",
-    "eslint-config-next": "15.4.4",
-    "@eslint/eslintrc": "^3"
-  }
+    "name": "happy-harmony-v2",
+    "version": "0.1.0",
+    "private": true,
+    "description": "A web app to help you keep track of and choose which pleasurable activities to do",
+    "keywords": [
+        "therapy",
+        "pleasurable activities"
+    ],
+    "repository": {
+        "type": "git",
+        "url": ""
+    },
+    "author": {
+        "name": "Jacob Andes",
+        "email": "jacobandesdev@gmail.com",
+        "url": "https://jacobandes.dev"
+    },
+    "bugs": {
+        "email": "jacobandesdev@gmail.com"
+    },
+    "homepage": "https://github.com/booshja/happy-harmony",
+    "scripts": {
+        "dev": "next dev",
+        "build": "next build",
+        "start": "next start",
+        "lint": "next lint",
+        "test": "jest",
+        "test:watch": "jest --watch"
+    },
+    "dependencies": {
+        "next": "15.4.4",
+        "next-plausible": "^3.12.4",
+        "react": "19.1.0",
+        "react-dom": "19.1.0",
+        "styled-components": "^6.1.19",
+        "zod": "^4.0.10",
+        "zustand": "^5.0.6"
+    },
+    "devDependencies": {
+        "@eslint/eslintrc": "^3.3.1",
+        "@testing-library/jest-dom": "^6.6.4",
+        "@testing-library/react": "^16.3.0",
+        "@types/node": "^24.1.0",
+        "@types/react": "^19",
+        "@types/react-dom": "^19",
+        "eslint": "^9.32.0",
+        "eslint-config-next": "15.4.4",
+        "eslint-config-prettier": "^10.1.8",
+        "jest": "^30.0.5",
+        "jest-styled-components": "^7.2.0",
+        "prettier": "^3.6.2",
+        "typescript": "^5.8.3"
+    }
 }
