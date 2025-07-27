@@ -1,0 +1,11 @@
+/dist
+/coverage
+node_modules
+coverages
+storybook-static
+.history
+.cache
+.yalc
+
+CHANGELOG.md
+CHANGELOG.json

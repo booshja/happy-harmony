@@ -1,7 +1,11 @@
 import type { NextConfig } from "next";
+import { withPlausibleProxy } from "next-plausible";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+    images: {},
+    async redirects() {
+        return [];
+    },
 };
 
-export default nextConfig;
+export default withPlausibleProxy()(nextConfig);
