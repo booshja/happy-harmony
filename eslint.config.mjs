@@ -23,6 +23,7 @@ export default typedConfig(
             "**/.vscode/*",
             "**/next.config.ts",
             "**/generated/*",
+            "**/.changeset/*",
         ],
     },
     pluginJs.configs.recommended,

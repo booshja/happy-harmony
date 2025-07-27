@@ -1,88 +1,91 @@
 {
-  "name": "happy-harmony-v2",
-  "version": "0.1.0",
-  "private": true,
-  "description": "A web app to help you keep track of and choose which pleasurable activities to do",
-  "keywords": [
-    "therapy",
-    "pleasurable activities"
-  ],
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/booshja/happy-harmony"
-  },
-  "author": {
-    "name": "Jacob Andes",
-    "email": "jacobandesdev@gmail.com",
-    "url": "https://jacobandes.dev"
-  },
-  "bugs": {
-    "email": "jacobandesdev@gmail.com"
-  },
-  "homepage": "https://github.com/booshja/happy-harmony",
-  "type": "module",
-  "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint",
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "prepare": "husky"
-  },
-  "prisma": {
-    "seed": "tsx prisma/seed.ts"
-  },
-  "dependencies": {
-    "@emotion/react": "^11.14.0",
-    "@emotion/styled": "^11.14.1",
-    "@eslint/js": "^9.32.0",
-    "@prisma/client": "6.12.0",
-    "@prisma/extension-accelerate": "^2.0.2",
-    "next": "15.4.4",
-    "next-plausible": "^3.12.4",
-    "react": "19.1.0",
-    "react-dom": "19.1.0",
-    "zod": "^4.0.10",
-    "zustand": "^5.0.6"
-  },
-  "devDependencies": {
-    "@emotion/jest": "^11.13.0",
-    "@eslint/eslintrc": "^3.3.1",
-    "@next/eslint-plugin-next": "^15.4.4",
-    "@playwright/test": "^1.54.1",
-    "@testing-library/jest-dom": "^6.6.4",
-    "@testing-library/react": "^16.3.0",
-    "@types/node": "^24.1.0",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
-    "eslint": "^9.32.0",
-    "eslint-config-next": "15.4.4",
-    "eslint-config-prettier": "^10.1.8",
-    "eslint-import-resolver-typescript": "^4.4.4",
-    "eslint-plugin-import": "^2.32.0",
-    "eslint-plugin-jest": "^29.0.1",
-    "eslint-plugin-jsx-a11y": "^6.10.2",
-    "eslint-plugin-perfectionist": "^4.15.0",
-    "eslint-plugin-react-hooks": "^5.2.0",
-    "eslint-plugin-unused-imports": "^4.1.4",
-    "globals": "^16.3.0",
-    "husky": "^9.1.7",
-    "jest": "^30.0.5",
-    "lint-staged": "^16.1.2",
-    "prettier": "^3.6.2",
-    "prisma": "6.12.0",
-    "tsx": "^4.20.3",
-    "typescript": "^5.8.3",
-    "typescript-eslint": "^8.38.0"
-  },
-  "lint-staged": {
-    "*.{js,jsx,ts,tsx}": [
-      "eslint --fix",
-      "prettier --write"
+    "name": "happy-harmony-v2",
+    "version": "0.1.0",
+    "private": true,
+    "description": "A web app to help you keep track of and choose which pleasurable activities to do",
+    "keywords": [
+        "therapy",
+        "pleasurable activities"
     ],
-    "*.{css,scss,md}": [
-      "prettier --write"
-    ]
-  }
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/booshja/happy-harmony"
+    },
+    "author": {
+        "name": "Jacob Andes",
+        "email": "jacobandesdev@gmail.com",
+        "url": "https://jacobandes.dev"
+    },
+    "bugs": {
+        "email": "jacobandesdev@gmail.com"
+    },
+    "homepage": "https://github.com/booshja/happy-harmony",
+    "type": "module",
+    "scripts": {
+        "dev": "next dev",
+        "build": "next build",
+        "start": "next start",
+        "lint": "next lint",
+        "test": "jest",
+        "test:watch": "jest --watch",
+        "prepare": "husky",
+        "change": "changeset add",
+        "empty-commit": "changeset --empty"
+    },
+    "prisma": {
+        "seed": "tsx prisma/seed.ts"
+    },
+    "dependencies": {
+        "@changesets/cli": "^2.29.5",
+        "@emotion/react": "^11.14.0",
+        "@emotion/styled": "^11.14.1",
+        "@eslint/js": "^9.32.0",
+        "@prisma/client": "6.12.0",
+        "@prisma/extension-accelerate": "^2.0.2",
+        "next": "15.4.4",
+        "next-plausible": "^3.12.4",
+        "react": "19.1.0",
+        "react-dom": "19.1.0",
+        "zod": "^4.0.10",
+        "zustand": "^5.0.6"
+    },
+    "devDependencies": {
+        "@emotion/jest": "^11.13.0",
+        "@eslint/eslintrc": "^3.3.1",
+        "@next/eslint-plugin-next": "^15.4.4",
+        "@playwright/test": "^1.54.1",
+        "@testing-library/jest-dom": "^6.6.4",
+        "@testing-library/react": "^16.3.0",
+        "@types/node": "^24.1.0",
+        "@types/react": "^19",
+        "@types/react-dom": "^19",
+        "eslint": "^9.32.0",
+        "eslint-config-next": "15.4.4",
+        "eslint-config-prettier": "^10.1.8",
+        "eslint-import-resolver-typescript": "^4.4.4",
+        "eslint-plugin-import": "^2.32.0",
+        "eslint-plugin-jest": "^29.0.1",
+        "eslint-plugin-jsx-a11y": "^6.10.2",
+        "eslint-plugin-perfectionist": "^4.15.0",
+        "eslint-plugin-react-hooks": "^5.2.0",
+        "eslint-plugin-unused-imports": "^4.1.4",
+        "globals": "^16.3.0",
+        "husky": "^9.1.7",
+        "jest": "^30.0.5",
+        "lint-staged": "^16.1.2",
+        "prettier": "^3.6.2",
+        "prisma": "6.12.0",
+        "tsx": "^4.20.3",
+        "typescript": "^5.8.3",
+        "typescript-eslint": "^8.38.0"
+    },
+    "lint-staged": {
+        "*.{js,jsx,ts,tsx}": [
+            "eslint --fix",
+            "prettier --write"
+        ],
+        "*.{css,scss,md}": [
+            "prettier --write"
+        ]
+    }
 }
