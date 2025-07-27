@@ -1,15 +1,12 @@
 // @ts-check
 import { FlatCompat } from "@eslint/eslintrc";
 import pluginJs from "@eslint/js";
-import reactPlugin from "eslint-plugin-react";
-// import importPlugin from "eslint-plugin-import";
 import prettierConfig from "eslint-config-prettier";
-import { config as typedConfig, configs as tsConfigs } from "typescript-eslint";
-import globals from "globals";
-// import jsxA11y from "eslint-plugin-jsx-a11y";
 import pluginJest from "eslint-plugin-jest";
-import typescriptSortKeys from "eslint-plugin-typescript-sort-keys";
+import perfectionist from "eslint-plugin-perfectionist";
 import unusedImports from "eslint-plugin-unused-imports";
+import globals from "globals";
+import { configs as tsConfigs, config as typedConfig } from "typescript-eslint";
 
 const compat = new FlatCompat({
     baseDirectory: import.meta.dirname,
@@ -25,26 +22,24 @@ export default typedConfig(
             "**/.husky/*",
             "**/.vscode/*",
             "**/next.config.ts",
+            "**/generated/*",
         ],
     },
-    {
-        files: ["**/*.{js,mjs,cjs,ts,jsx,tsx}"],
-    },
     pluginJs.configs.recommended,
-    reactPlugin.configs.flat.recommended,
     ...tsConfigs.recommended,
     ...tsConfigs.recommendedTypeChecked,
     pluginJest.configs["flat/recommended"],
+    perfectionist.configs["recommended-alphabetical"],
     {
         languageOptions: {
             ecmaVersion: "latest",
-            sourceType: "module",
             globals: globals.browser,
             parserOptions: {
                 ecmaFeatures: { jsx: true },
                 projectService: true,
                 tsconfigRoofDir: import.meta.dirname,
             },
+            sourceType: "module",
         },
         settings: {
             react: {
@@ -53,9 +48,8 @@ export default typedConfig(
         },
     },
     {
-        files: ["*.ts", "*.tsx"],
+        files: ["**/*.{js,mjs,cjs,ts,jsx,tsx}"],
         plugins: {
-            "typescript-sort-keys": typescriptSortKeys,
             "unused-imports": unusedImports,
         },
         rules: {
@@ -71,22 +65,6 @@ export default typedConfig(
             ],
             "@typescript-eslint/prefer-includes": "off",
             "@typescript-eslint/restrict-plus-operands": "off",
-            "import/order": [
-                "error",
-                {
-                    alphabetize: {
-                        order: "asc",
-                    },
-                    "newlines-between": "always",
-                    groups: [
-                        "builtin",
-                        ["external", "internal"],
-                        "parent",
-                        "sibling",
-                        "index",
-                    ],
-                },
-            ],
             "jest/no-focused-tests": "error",
             "jsx-a11y/label-has-associated-control": [
                 "error",
@@ -133,13 +111,6 @@ export default typedConfig(
             "react/no-array-index-key": "error",
             "react/prop-types": "off",
             "react/self-closing-comp": "error",
-            "typescript-sort-keys/interface": [
-                "error",
-                "asc",
-                {
-                    requiredFirst: true,
-                },
-            ],
             "unused-imports/no-unused-imports": "error",
         },
     },
@@ -150,14 +121,14 @@ export default typedConfig(
         },
         rules: {
             ...pluginJest.configs["flat/recommended"].rules,
-            "@typescript-eslint/no-unsafe-return": "off",
             "@typescript-eslint/no-non-null-assertion": "off",
-            "react/display-name": "off",
+            "@typescript-eslint/no-unsafe-return": "off",
             "jest/no-disabled-tests": "warn",
             "jest/no-focused-tests": "error",
             "jest/no-identical-title": "error",
             "jest/prefer-to-have-length": "warn",
             "jest/valid-expect": "error",
+            "react/display-name": "off",
         },
     },
     {

@@ -25,6 +25,7 @@ export function extractAsTuple<T extends Record<string, unknown>>(
     obj: T,
     keysOrValues: "keys" | "values",
 ): [string, ...string[]] {
+    // eslint-disable-next-line perfectionist/sort-union-types
     let items: T[keyof T][] | (keyof T)[] = [];
     let tuple = [];
 

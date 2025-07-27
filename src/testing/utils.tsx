@@ -1,6 +1,6 @@
-import { render, type RenderOptions } from "@testing-library/react";
-
 import type { ReactElement, ReactNode } from "react";
+
+import { render, type RenderOptions } from "@testing-library/react";
 
 const AllTheProviders = ({ children }: { children: ReactNode }) => {
     return <>{children}</>;
