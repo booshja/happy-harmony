@@ -6,6 +6,8 @@ export const Page = styled.main`
     flex-direction: column;
     align-items: center;
     padding-inline: 32px;
+    // 100% of window - footer - navbar
+    height: calc(100dvh - 250px - 60px);
 `;
 
 export const Greeting = styled.h1`
