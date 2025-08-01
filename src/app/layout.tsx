@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 
+import { Footer } from "@/components/Footer/Footer";
 import { Navbar } from "@/components/Navbar/Navbar";
 import { inter } from "@/fonts/inter";
 import { METADATA } from "@/utils/constants/metadata";
@@ -20,6 +21,7 @@ export default function RootLayout({ children }: Readonly<RootLayoutProps>) {
             <body className={`${inter.className}`}>
                 <Navbar />
                 {children}
+                <Footer />
             </body>
         </html>
     );

@@ -10,14 +10,14 @@ export default function HomePage() {
             <MenuBoxes>
                 <HomeBox>
                     <BoxHeader>Choose an activity</BoxHeader>
-                    <Link href="">Get a list</Link>
-                    <Link href="">Get an activity</Link>
-                    <Link href="">Browse your lists</Link>
+                    <Link href="/app/selector?type=list">Get a list</Link>
+                    <Link href="/app/selector?type=single">Get an activity</Link>
+                    <Link href="/app/activities">Browse your activities</Link>
                 </HomeBox>
                 <HomeBox>
-                    <Link href="">Add an activity</Link>
-                    <Link href="">Edit your activities</Link>
-                    <Link href="">Edit your categories</Link>
+                    <Link href="/app/activities/add">Add an activity</Link>
+                    <Link href="/app/activities/edit">Edit your activities</Link>
+                    <Link href="/app/categories/edit">Edit your categories</Link>
                 </HomeBox>
             </MenuBoxes>
         </Page>
