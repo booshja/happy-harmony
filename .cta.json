@@ -1,0 +1,10 @@
+{
+    "projectName": "happy-harmony",
+    "mode": "file-router",
+    "typescript": true,
+    "packageManager": "pnpm",
+    "git": true,
+    "version": 1,
+    "framework": "react-cra",
+    "chosenAddOns": ["eslint", "start", "sentry", "tanstack-query"]
+}
