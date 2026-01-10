@@ -1,0 +1,26 @@
+node_modules
+.DS_Store
+dist
+dist-ssr
+*.local
+count.txt
+.env
+.nitro
+.tanstack
+.output
+.eslintcache
+.vinxi
+todos.json
+
+.vscode/*
+
+# pnpm cache (local store)
+.pnpm-store/
+pnpm-workspace.yaml
+
+# Playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/playwright/.auth/

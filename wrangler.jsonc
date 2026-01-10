@@ -1,0 +1,33 @@
+{
+    "$schema": "./node_modules/wrangler/config-schema.json",
+    "name": "happy-harmony",
+    "main": "src/index.js",
+    "compatibility_date": "2026-01-09",
+    "compatibility_flags": ["nodejs_compat", "remove_nodejs_compat_eol"],
+    "workers_dev": false,
+    "route": {
+        "pattern": "happyharmony.dev/*",
+        "zone_name": "happyharmony.dev",
+    },
+    "kv_namespaces": [
+        {
+            "binding": "KV",
+            "id": "YOUR KV ID",
+        },
+    ],
+    "env": {
+        "staging": {
+            "name": "happy-harmony-staging",
+            "route": {
+                "pattern": "staging.happyharmony.dev/*",
+                "zone_name": "happyharmony.dev",
+            },
+            "kv_namespaces": [
+                {
+                    "binding": "KV",
+                    "id": "YOUR STAGING KV ID",
+                },
+            ],
+        },
+    },
+}
