@@ -1,5 +1,8 @@
 import { defineConfig, devices } from "@playwright/test";
 
+const PORT = 4173;
+const BASE_URL = `http://127.0.0.1:${PORT}`;
+
 /**
  * Read environment variables from file.
  * https://github.com/motdotla/dotenv
@@ -22,14 +25,33 @@ export default defineConfig({
     /* Opt out of parallel tests on CI. */
     workers: process.env.CI ? 1 : undefined,
     /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-    reporter: "html",
+    reporter: [
+        ["list"],
+        [
+            "html",
+            {
+                open: "never",
+            },
+        ],
+    ],
     /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
     use: {
         /* Base URL to use in actions like `await page.goto('')`. */
-        // baseURL: 'http://localhost:3000',
+        baseURL: BASE_URL,
 
         /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
         trace: "on-first-retry",
+    },
+
+    webServer: {
+        command: `pnpm exec vite dev --host --port ${PORT}`,
+        url: BASE_URL,
+        reuseExistingServer: !process.env.CI,
+        stdout: "pipe",
+        env: {
+            ...process.env,
+            SKIP_ENV_LOAD: "true",
+        },
     },
 
     /* Configure projects for major browsers */

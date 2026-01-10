@@ -7,8 +7,17 @@ import viteTsConfigPaths from "vite-tsconfig-paths";
 import { parseServerEnv } from "./src/config/validation";
 
 export default defineConfig(({ mode }) => {
+    const shouldSkipEnvLoad = process.env.SKIP_ENV_LOAD === "true";
+
+    const envFromFiles: Record<string, string> = shouldSkipEnvLoad
+        ? {}
+        : loadEnv(mode, process.cwd(), "");
+
     // Load .env files into process.env for the current mode
-    const env = parseServerEnv(loadEnv(mode, process.cwd(), ""));
+    const env = parseServerEnv({
+        ...process.env,
+        ...envFromFiles,
+    });
 
     const plugins = [
         // this is the plugin that enables path aliases
