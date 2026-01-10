@@ -1,8 +1,19 @@
 import * as Sentry from "@sentry/tanstackstart-react";
-import { createMiddleware, registerGlobalMiddleware } from "@tanstack/react-start";
+import { createMiddleware, createStart } from "@tanstack/react-start";
 
-registerGlobalMiddleware({
-    middleware: [
-        createMiddleware().server(Sentry.sentryGlobalServerMiddlewareHandler()),
-    ],
-});
+const sentryFunctionMiddleware = createMiddleware({ type: "function" }).server(
+    async ({ next, functionId, method }) =>
+        Sentry.startSpan(
+            {
+                name: functionId,
+                op: `server.fn.${method}`,
+            },
+            () => next(),
+        ),
+);
+
+export const functionMiddleware = [sentryFunctionMiddleware];
+
+export const start = createStart(() => ({
+    functionMiddleware,
+}));
