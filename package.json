@@ -39,7 +39,7 @@
         "@tanstack/react-start": "^1.132.0",
         "@tanstack/router-plugin": "^1.132.0",
         "aws4fetch": "^1.0.20",
-        "better-auth": "^1.3.24",
+        "better-auth": "^1.4.5",
         "dotenv": "^17.2.3",
         "drizzle-orm": "^0.45.1",
         "eslint": "link:@tanstack/config/eslint",
