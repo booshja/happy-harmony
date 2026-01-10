@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [main]
+    branches: [mainline]
   pull_request:
-    branches: [main]
+    branches: [mainline]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -15,6 +15,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Enable corepack
         run: corepack enable
@@ -35,8 +37,10 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Changeset status (fail if missing)
+        env:
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
         run: |
-          pnpm exec changeset status --since=origin/main > /tmp/changeset-status.txt
+          pnpm exec changeset status --since=origin/"${DEFAULT_BRANCH:-main}" > /tmp/changeset-status.txt
           cat /tmp/changeset-status.txt
           if grep -q "No changesets present" /tmp/changeset-status.txt; then
             echo "Missing changeset for this PR"
@@ -45,6 +49,12 @@ jobs:
 
   build:
     runs-on: ubuntu-latest
+    environment: production
+    env:
+      VITE_SENTRY_DSN: ${{ vars.VITE_SENTRY_DSN }}
+      VITE_SENTRY_ORG: ${{ vars.VITE_SENTRY_ORG }}
+      VITE_SENTRY_PROJECT: ${{ vars.VITE_SENTRY_PROJECT }}
+      SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
     steps:
       - uses: actions/checkout@v4
 
@@ -77,6 +87,12 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
+    environment: production
+    env:
+      VITE_SENTRY_DSN: ${{ vars.VITE_SENTRY_DSN }}
+      VITE_SENTRY_ORG: ${{ vars.VITE_SENTRY_ORG }}
+      VITE_SENTRY_PROJECT: ${{ vars.VITE_SENTRY_PROJECT }}
+      SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
     steps:
       - uses: actions/checkout@v4
 
