@@ -1,5 +1,6 @@
 {
     "name": "happy-harmony",
+    "version": "0.0.1",
     "private": true,
     "type": "module",
     "scripts": {
@@ -11,6 +12,8 @@
         "test:watch": "vitest",
         "test:cov": "vitest run --coverage",
         "prepare": "husky",
+        "change": "pnpm exec changeset",
+        "change:empty": "pnpm exec changeset add --empty",
         "lint": "pnpm exec eslint --cache --cache-location .eslintcache .",
         "lint:fix": "pnpm exec eslint --cache --cache-location .eslintcache --fix .",
         "lint-staged": "pnpm exec lint-staged",
