@@ -1,7 +1,7 @@
 {
     "$schema": "./node_modules/wrangler/config-schema.json",
     "name": "happy-harmony",
-    "main": "@tanstack/react-start/server-entry",
+    "main": "./node_modules/@tanstack/react-start/dist/default-entry/esm/server.js",
     "compatibility_date": "2026-01-10",
     "compatibility_flags": ["nodejs_compat", "remove_nodejs_compat_eol"],
     "workers_dev": true,
