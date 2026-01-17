@@ -8,6 +8,8 @@ import viteTsConfigPaths from "vite-tsconfig-paths";
 import { parseBuildEnv } from "./src/config/validation";
 
 export default defineConfig(({ mode }) => {
+    const isCiOrSsr = process.env.VITEST === "true" || mode === "test";
+
     const shouldSkipEnvLoad = process.env.SKIP_ENV_LOAD === "true";
 
     const envFromFiles: Record<string, string> = shouldSkipEnvLoad
@@ -19,6 +21,12 @@ export default defineConfig(({ mode }) => {
         ...process.env,
         ...envFromFiles,
     });
+
+    const devtoolsStub = {
+        "@tanstack/react-devtools": "./src/stubs/devtools.tsx",
+        "@tanstack/react-router-devtools": "./src/stubs/devtools.tsx",
+        "@tanstack/react-query-devtools": "./src/stubs/devtools.tsx",
+    };
 
     const plugins = [
         // this is the plugin that enables path aliases
@@ -66,6 +74,9 @@ export default defineConfig(({ mode }) => {
 
     const config = {
         plugins,
+        resolve: {
+            alias: isCiOrSsr ? devtoolsStub : {},
+        },
         build: {
             // Needed so Sentry can match uploaded artifacts to source maps
             sourcemap: enableSourcemaps,
