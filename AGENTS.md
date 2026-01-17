@@ -58,7 +58,7 @@ Guidance for AI agents (Cursor/Claude) working in this repo.
 
 ## Git & PR workflow
 
-- Branch per PR; target `main`.
+- Branch per PR; target `mainline`.
 - Keep PRs narrowly scoped for easy review.
 - Commit messages: format as `<TICKET-123>: <summary>`; include what changed.
 - Changesets are required when packages change; include a brief human-readable summary and bump patch for fixes/non-breaking tweaks, minor for new features. Pipeline will fail if missing.
