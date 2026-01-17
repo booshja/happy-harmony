@@ -1,12 +1,29 @@
+import path from "node:path";
+
+import { cloudflare } from "@cloudflare/vite-plugin";
 import { sentryVitePlugin } from "@sentry/vite-plugin";
 import { tanstackStart } from "@tanstack/react-start/plugin/vite";
 import viteReact from "@vitejs/plugin-react";
 import { defineConfig, loadEnv } from "vite";
 import viteTsConfigPaths from "vite-tsconfig-paths";
 
-import { parseServerEnv } from "./src/config/validation";
+import { parseBuildEnv } from "./src/config/validation";
 
-export default defineConfig(({ mode }) => {
+export default defineConfig((configEnv) => {
+    const { command, mode, ssrBuild } = configEnv as typeof configEnv & {
+        ssrBuild?: boolean;
+    };
+    const isSsrBuild = Boolean(ssrBuild);
+    const isVitest = process.env.VITEST === "true";
+    const isPlaywright = process.env.PLAYWRIGHT_TEST === "true";
+    const isCi = process.env.CI === "true" || process.env.CI === "1";
+    const shouldAliasDevtools =
+        isSsrBuild ||
+        isVitest ||
+        (isPlaywright && command === "serve") ||
+        (isCi && command === "build");
+    const shouldUseCloudflare = !isVitest;
+
     const shouldSkipEnvLoad = process.env.SKIP_ENV_LOAD === "true";
 
     const envFromFiles: Record<string, string> = shouldSkipEnvLoad
@@ -14,10 +31,22 @@ export default defineConfig(({ mode }) => {
         : loadEnv(mode, process.cwd(), "");
 
     // Load .env files into process.env for the current mode
-    const env = parseServerEnv({
+    const env = parseBuildEnv({
         ...process.env,
         ...envFromFiles,
     });
+
+    const devtoolsStub = {
+        "@tanstack/react-devtools": path.resolve(__dirname, "src/stubs/devtools.tsx"),
+        "@tanstack/react-router-devtools": path.resolve(
+            __dirname,
+            "src/stubs/devtools.tsx",
+        ),
+        "@tanstack/react-query-devtools": path.resolve(
+            __dirname,
+            "src/stubs/devtools.tsx",
+        ),
+    };
 
     const plugins = [
         // this is the plugin that enables path aliases
@@ -25,6 +54,13 @@ export default defineConfig(({ mode }) => {
             projects: ["./tsconfig.json"],
         }),
         tanstackStart(),
+        ...(shouldUseCloudflare
+            ? [
+                  cloudflare({
+                      viteEnvironment: { name: "ssr" },
+                  }),
+              ]
+            : []),
         viteReact({
             babel: {
                 plugins: ["babel-plugin-react-compiler"],
@@ -33,7 +69,10 @@ export default defineConfig(({ mode }) => {
     ];
 
     const sentryOptions =
-        env.VITE_SENTRY_ORG && env.VITE_SENTRY_PROJECT && env.SENTRY_AUTH_TOKEN
+        env.CI &&
+        env.VITE_SENTRY_ORG &&
+        env.VITE_SENTRY_PROJECT &&
+        env.SENTRY_AUTH_TOKEN
             ? {
                   org: env.VITE_SENTRY_ORG,
                   project: env.VITE_SENTRY_PROJECT,
@@ -43,6 +82,8 @@ export default defineConfig(({ mode }) => {
                   silent: !env.CI,
               }
             : null;
+
+    const enableSourcemaps = Boolean(sentryOptions);
 
     if (sentryOptions) {
         plugins.push(
@@ -57,11 +98,18 @@ export default defineConfig(({ mode }) => {
 
     const config = {
         plugins,
+        resolve: {
+            alias: shouldAliasDevtools ? devtoolsStub : {},
+        },
+        build: {
+            // Needed so Sentry can match uploaded artifacts to source maps
+            sourcemap: enableSourcemaps,
+        },
         test: {
             globals: true,
             environment: "jsdom",
             setupFiles: ["./vitest.setup.ts"],
-            exclude: ["e2eTests/**/*", "node_modules/**/*", "dist/**/*"],
+            exclude: ["e2e/**/*", "node_modules/**/*", "dist/**/*"],
         },
     };
 

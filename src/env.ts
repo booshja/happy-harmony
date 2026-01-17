@@ -1,7 +1,7 @@
 /// <reference types="vite/client" />
 
-import { parseServerEnv } from "./config/validation";
-import type { ServerEnv } from "./config/validation";
+import { parseBuildEnv } from "./config/validation";
+import type { BuildEnv } from "./config/validation";
 
 declare global {
     interface ImportMetaEnv {
@@ -31,4 +31,4 @@ declare global {
     }
 }
 
-export const env: ServerEnv = parseServerEnv(process.env);
+export const env: BuildEnv = parseBuildEnv(process.env);

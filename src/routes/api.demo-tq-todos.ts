@@ -1,6 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
 
-const todos = [
+type Todo = {
+    id: number;
+    name: string;
+};
+
+const todos: Array<Todo> = [
     {
         id: 1,
         name: "Buy groceries",
@@ -22,10 +27,20 @@ export const Route = createFileRoute("/api/demo-tq-todos")({
                 return Response.json(todos);
             },
             POST: async ({ request }) => {
-                const name = await request.json();
-                const todo = {
+                const body = await request.json();
+                const name =
+                    typeof body === "string" ? body : (body as { name?: unknown }).name;
+
+                if (typeof name !== "string" || name.trim().length === 0) {
+                    return Response.json(
+                        { error: "name must be a non-empty string" },
+                        { status: 400 },
+                    );
+                }
+
+                const todo: Todo = {
                     id: todos.length + 1,
-                    name,
+                    name: name.trim(),
                 };
                 todos.push(todo);
                 return Response.json(todo);
