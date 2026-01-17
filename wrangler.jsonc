@@ -1,22 +1,16 @@
 {
-    "$schema": "./node_modules/wrangler/config-schema.json",
-    "name": "happy-harmony",
-    "main": "./node_modules/@tanstack/react-start/dist/default-entry/esm/server.js",
-    "compatibility_date": "2026-01-07",
-    "compatibility_flags": ["nodejs_compat", "remove_nodejs_compat_eol"],
-    "workers_dev": true,
-    "observability": { "enabled": true },
-    "route": {
-        "pattern": "happyharmony.dev/*",
-        "zone_name": "happyharmony.dev",
-    },
-    "env": {
-        "staging": {
-            "name": "happy-harmony-staging",
-            "route": {
-                "pattern": "staging.happyharmony.dev/*",
-                "zone_name": "happyharmony.dev",
-            },
-        },
-    },
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "happy-harmony",
+  "main": "./node_modules/@tanstack/react-start/dist/default-entry/esm/server.js",
+  "compatibility_date": "2026-01-07",
+  "compatibility_flags": ["nodejs_compat", "remove_nodejs_compat_eol"],
+  "workers_dev": true,
+  "observability": { "enabled": true },
+  "env": {
+    "staging": {
+      "name": "happy-harmony-staging"
+    }
+  }
 }
+// Custom domain (app.happyharmony.dev) is attached in Cloudflare dashboard via Custom Domains.
+// Do not add "route" here; we want to keep apex free for "marketing page(s)".

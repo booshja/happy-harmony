@@ -16,12 +16,8 @@ export default defineConfig((configEnv) => {
     const isSsrBuild = Boolean(ssrBuild);
     const isVitest = process.env.VITEST === "true";
     const isPlaywright = process.env.PLAYWRIGHT_TEST === "true";
-    const isCi = process.env.CI === "true" || process.env.CI === "1";
     const shouldAliasDevtools =
-        isSsrBuild ||
-        isVitest ||
-        (isPlaywright && command === "serve") ||
-        (isCi && command === "build");
+        isSsrBuild || command === "build" || isVitest || isPlaywright;
     const shouldUseCloudflare = !isVitest;
 
     const shouldSkipEnvLoad = process.env.SKIP_ENV_LOAD === "true";
