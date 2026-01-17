@@ -43,24 +43,14 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         void import("../app/sentry.client");
     }, []);
 
-    const shouldShowDevtools = import.meta.env.DEV && typeof window !== "undefined";
-
-    if (!shouldShowDevtools) {
-        return (
-            <html lang="en">
-                <head>
-                    <HeadContent />
-                </head>
-                <body>
-                    <Header />
-                    {children}
-                    <Scripts />
-                </body>
-            </html>
-        );
-    }
-
-    const Devtools = lazy(() => import("../components/Devtools"));
+    const shouldShowDevtools =
+        import.meta.env.DEV &&
+        typeof window !== "undefined" &&
+        process.env.CI !== "true" &&
+        process.env.CI !== "1";
+    const Devtools = shouldShowDevtools
+        ? lazy(() => import("../components/Devtools"))
+        : null;
 
     return (
         <html lang="en">
@@ -70,9 +60,11 @@ function RootDocument({ children }: { children: React.ReactNode }) {
             <body>
                 <Header />
                 {children}
-                <Suspense fallback={null}>
-                    <Devtools />
-                </Suspense>
+                {Devtools ? (
+                    <Suspense fallback={null}>
+                        <Devtools />
+                    </Suspense>
+                ) : null}
                 <Scripts />
             </body>
         </html>
