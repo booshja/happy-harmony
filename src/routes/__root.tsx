@@ -43,10 +43,24 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         void import("../app/sentry.client");
     }, []);
 
-    const Devtools =
-        import.meta.env.DEV && typeof window !== "undefined"
-            ? lazy(() => import("../components/Devtools"))
-            : null;
+    const shouldShowDevtools = import.meta.env.DEV && typeof window !== "undefined";
+
+    if (!shouldShowDevtools) {
+        return (
+            <html lang="en">
+                <head>
+                    <HeadContent />
+                </head>
+                <body>
+                    <Header />
+                    {children}
+                    <Scripts />
+                </body>
+            </html>
+        );
+    }
+
+    const Devtools = lazy(() => import("../components/Devtools"));
 
     return (
         <html lang="en">
@@ -56,11 +70,9 @@ function RootDocument({ children }: { children: React.ReactNode }) {
             <body>
                 <Header />
                 {children}
-                {Devtools ? (
-                    <Suspense fallback={null}>
-                        <Devtools />
-                    </Suspense>
-                ) : null}
+                <Suspense fallback={null}>
+                    <Devtools />
+                </Suspense>
                 <Scripts />
             </body>
         </html>
