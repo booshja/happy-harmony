@@ -1,7 +1,7 @@
 import { z } from "zod";
 import type { ZodIssue } from "zod";
 
-export const serverEnvSchema = z
+export const buildEnvSchema = z
     .object({
         VITE_SENTRY_ORG: z.string().trim().optional(),
         VITE_SENTRY_PROJECT: z.string().trim().optional(),
@@ -33,12 +33,12 @@ export const serverEnvSchema = z
         });
     });
 
-export type ServerEnv = z.infer<typeof serverEnvSchema>;
+export type BuildEnv = z.infer<typeof buildEnvSchema>;
 
-export function parseServerEnv(
+export function parseBuildEnv(
     env: NodeJS.ProcessEnv | Record<string, string>,
-): ServerEnv {
-    const result = serverEnvSchema.safeParse(env);
+): BuildEnv {
+    const result = buildEnvSchema.safeParse(env);
 
     if (result.success) return result.data;
 
@@ -49,5 +49,5 @@ export function parseServerEnv(
         )
         .join("\n");
 
-    throw new Error(`Invalid environment variables:\n${issues}`);
+    throw new Error(`Invalid build environment variables:\n${issues}`);
 }

@@ -6,8 +6,6 @@
  * @ai_context: Demonstrates Sentry features through interactive examples with educational context
  */
 
-import * as fs from "node:fs/promises";
-
 import * as Sentry from "@sentry/tanstackstart-react";
 import { createFileRoute } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
@@ -20,29 +18,25 @@ export const Route = createFileRoute("/demo/sentry/testing")({
 // Server function that will error
 const badServerFunc = createServerFn({
     method: "GET",
-}).handler(async () => {
-    return await Sentry.startSpan(
+}).handler(() =>
+    Sentry.startSpan(
         {
-            name: "Reading non-existent file",
-            op: "file.read",
+            name: "Simulated server error",
+            op: "demo.server-error",
         },
-        async () => {
-            try {
-                await fs.readFile("./doesnt-exist", "utf-8");
-                return true;
-            } catch (error) {
-                Sentry.captureException(error);
-                throw error;
-            }
+        () => {
+            const error = new Error("Simulated server error for Sentry demo");
+            Sentry.captureException(error);
+            throw error;
         },
-    );
-});
+    ),
+);
 
 // Server function that will succeed but be traced
 const goodServerFunc = createServerFn({
     method: "GET",
-}).handler(async () => {
-    return await Sentry.startSpan(
+}).handler(() =>
+    Sentry.startSpan(
         {
             name: "Successful server operation",
             op: "demo.success",
@@ -51,8 +45,8 @@ const goodServerFunc = createServerFn({
             await new Promise((resolve) => setTimeout(resolve, 500));
             return { success: true };
         },
-    );
-});
+    ),
+);
 
 function RouteComponent() {
     const [isLoading, setIsLoading] = useState<Record<string, boolean>>({});

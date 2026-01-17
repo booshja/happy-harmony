@@ -1,5 +1,6 @@
-import * as Sentry from "@sentry/tanstackstart-react";
 import { createMiddleware, createStart } from "@tanstack/react-start";
+
+import { Sentry } from "./sentry.server";
 
 const sentryFunctionMiddleware = createMiddleware({ type: "function" }).server(
     async ({ next, functionId, method }) =>

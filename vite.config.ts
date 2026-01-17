@@ -1,10 +1,11 @@
+import { cloudflare } from "@cloudflare/vite-plugin";
 import { sentryVitePlugin } from "@sentry/vite-plugin";
 import { tanstackStart } from "@tanstack/react-start/plugin/vite";
 import viteReact from "@vitejs/plugin-react";
 import { defineConfig, loadEnv } from "vite";
 import viteTsConfigPaths from "vite-tsconfig-paths";
 
-import { parseServerEnv } from "./src/config/validation";
+import { parseBuildEnv } from "./src/config/validation";
 
 export default defineConfig(({ mode }) => {
     const shouldSkipEnvLoad = process.env.SKIP_ENV_LOAD === "true";
@@ -14,7 +15,7 @@ export default defineConfig(({ mode }) => {
         : loadEnv(mode, process.cwd(), "");
 
     // Load .env files into process.env for the current mode
-    const env = parseServerEnv({
+    const env = parseBuildEnv({
         ...process.env,
         ...envFromFiles,
     });
@@ -25,6 +26,9 @@ export default defineConfig(({ mode }) => {
             projects: ["./tsconfig.json"],
         }),
         tanstackStart(),
+        cloudflare({
+            viteEnvironment: { name: "ssr" },
+        }),
         viteReact({
             babel: {
                 plugins: ["babel-plugin-react-compiler"],
@@ -33,7 +37,10 @@ export default defineConfig(({ mode }) => {
     ];
 
     const sentryOptions =
-        env.VITE_SENTRY_ORG && env.VITE_SENTRY_PROJECT && env.SENTRY_AUTH_TOKEN
+        env.CI &&
+        env.VITE_SENTRY_ORG &&
+        env.VITE_SENTRY_PROJECT &&
+        env.SENTRY_AUTH_TOKEN
             ? {
                   org: env.VITE_SENTRY_ORG,
                   project: env.VITE_SENTRY_PROJECT,
@@ -43,6 +50,8 @@ export default defineConfig(({ mode }) => {
                   silent: !env.CI,
               }
             : null;
+
+    const enableSourcemaps = Boolean(sentryOptions);
 
     if (sentryOptions) {
         plugins.push(
@@ -57,11 +66,15 @@ export default defineConfig(({ mode }) => {
 
     const config = {
         plugins,
+        build: {
+            // Needed so Sentry can match uploaded artifacts to source maps
+            sourcemap: enableSourcemaps,
+        },
         test: {
             globals: true,
             environment: "jsdom",
             setupFiles: ["./vitest.setup.ts"],
-            exclude: ["e2eTests/**/*", "node_modules/**/*", "dist/**/*"],
+            exclude: ["e2e/**/*", "node_modules/**/*", "dist/**/*"],
         },
     };
 

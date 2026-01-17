@@ -1,6 +1,6 @@
 import { defineConfig, devices } from "@playwright/test";
 
-const PORT = 4173;
+const PORT = 3000;
 const BASE_URL = `http://127.0.0.1:${PORT}`;
 
 /**
@@ -15,7 +15,7 @@ const BASE_URL = `http://127.0.0.1:${PORT}`;
  * See https://playwright.dev/docs/test-configuration.
  */
 export default defineConfig({
-    testDir: "./e2eTests",
+    testDir: "./e2e",
     /* Run tests in files in parallel */
     fullyParallel: true,
     /* Fail the build on CI if you accidentally left test.only in the source code. */
@@ -44,14 +44,10 @@ export default defineConfig({
     },
 
     webServer: {
-        command: `pnpm exec vite dev --host --port ${PORT}`,
+        command: `pnpm dev -- --port ${PORT}`,
         url: BASE_URL,
         reuseExistingServer: !process.env.CI,
         stdout: "pipe",
-        env: {
-            ...process.env,
-            SKIP_ENV_LOAD: "true",
-        },
     },
 
     /* Configure projects for major browsers */

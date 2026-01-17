@@ -1,14 +1,12 @@
-import { TanStackDevtools } from "@tanstack/react-devtools";
 import type { QueryClient } from "@tanstack/react-query";
 import {
     HeadContent,
     Scripts,
     createRootRouteWithContext,
 } from "@tanstack/react-router";
-import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
+import { Suspense, lazy, useEffect } from "react";
 
 import Header from "../components/Header";
-import TanStackQueryDevtools from "../integrations/tanstack-query/devtools";
 import appCss from "../styles.css?url";
 
 interface MyRouterContext {
@@ -41,6 +39,15 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 });
 
 function RootDocument({ children }: { children: React.ReactNode }) {
+    useEffect(() => {
+        void import("../app/sentry.client");
+    }, []);
+
+    const Devtools =
+        import.meta.env.DEV && typeof window !== "undefined"
+            ? lazy(() => import("../components/Devtools"))
+            : null;
+
     return (
         <html lang="en">
             <head>
@@ -49,18 +56,11 @@ function RootDocument({ children }: { children: React.ReactNode }) {
             <body>
                 <Header />
                 {children}
-                <TanStackDevtools
-                    config={{
-                        position: "bottom-left",
-                    }}
-                    plugins={[
-                        {
-                            name: "Tanstack Router",
-                            render: <TanStackRouterDevtoolsPanel />,
-                        },
-                        TanStackQueryDevtools,
-                    ]}
-                />
+                {Devtools ? (
+                    <Suspense fallback={null}>
+                        <Devtools />
+                    </Suspense>
+                ) : null}
                 <Scripts />
             </body>
         </html>
