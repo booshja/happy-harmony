@@ -15,7 +15,7 @@
         "test:watch": "vitest",
         "test:cov": "vitest run --coverage",
         "prepare": "husky",
-        "change": "pnpm exec changeset",
+        "change": "pnpm exec changeset && git add .changeset",
         "change:empty": "pnpm exec changeset add --empty",
         "lint": "pnpm exec eslint --cache --cache-location .eslintcache .",
         "lint:fix": "pnpm exec eslint --cache --cache-location .eslintcache --fix .",
