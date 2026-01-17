@@ -1,7 +1,8 @@
 import { defineConfig, devices } from "@playwright/test";
 
 const PORT = 3000;
-const BASE_URL = `http://127.0.0.1:${PORT}`;
+const BASE_URL = `http://localhost:${PORT}`;
+const WEB_SERVER_URL = `${BASE_URL}/__debug`;
 
 /**
  * Read environment variables from file.
@@ -44,10 +45,11 @@ export default defineConfig({
     },
 
     webServer: {
-        command: "pnpm dev:vite -- --host",
-        url: BASE_URL,
+        command: "pnpm dev:vite",
+        url: WEB_SERVER_URL,
         reuseExistingServer: !process.env.CI,
         stdout: "pipe",
+        timeout: 120_000,
         env: {
             ...process.env,
             PLAYWRIGHT_TEST: "true",
