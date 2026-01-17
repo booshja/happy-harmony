@@ -1,6 +1,6 @@
 import { defineConfig, devices } from "@playwright/test";
 
-const PORT = 4173;
+const PORT = 3000;
 const BASE_URL = `http://127.0.0.1:${PORT}`;
 
 /**
@@ -44,7 +44,7 @@ export default defineConfig({
     },
 
     webServer: {
-        command: `pnpm dev:vite -- --host --port ${PORT}`,
+        command: "pnpm dev:vite -- --host",
         url: BASE_URL,
         reuseExistingServer: !process.env.CI,
         stdout: "pipe",
