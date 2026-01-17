@@ -10,14 +10,15 @@ import viteTsConfigPaths from "vite-tsconfig-paths";
 import { parseBuildEnv } from "./src/config/validation";
 
 export default defineConfig((configEnv) => {
-    const { mode, ssrBuild } = configEnv as typeof configEnv & {
+    const { command, mode, ssrBuild } = configEnv as typeof configEnv & {
         ssrBuild?: boolean;
     };
-    const isTestLike =
-        ssrBuild ||
-        process.env.VITEST === "true" ||
-        process.env.PLAYWRIGHT_TEST === "true" ||
-        mode === "test";
+    const isSsrBuild = Boolean(ssrBuild);
+    const isVitest = process.env.VITEST === "true";
+    const isPlaywright = process.env.PLAYWRIGHT_TEST === "true";
+    const shouldAliasDevtools =
+        isSsrBuild || isVitest || (isPlaywright && command === "serve");
+    const shouldUseCloudflare = !isVitest;
 
     const shouldSkipEnvLoad = process.env.SKIP_ENV_LOAD === "true";
 
@@ -49,9 +50,13 @@ export default defineConfig((configEnv) => {
             projects: ["./tsconfig.json"],
         }),
         tanstackStart(),
-        cloudflare({
-            viteEnvironment: { name: "ssr" },
-        }),
+        ...(shouldUseCloudflare
+            ? [
+                  cloudflare({
+                      viteEnvironment: { name: "ssr" },
+                  }),
+              ]
+            : []),
         viteReact({
             babel: {
                 plugins: ["babel-plugin-react-compiler"],
@@ -90,7 +95,7 @@ export default defineConfig((configEnv) => {
     const config = {
         plugins,
         resolve: {
-            alias: isTestLike ? devtoolsStub : {},
+            alias: shouldAliasDevtools ? devtoolsStub : {},
         },
         build: {
             // Needed so Sentry can match uploaded artifacts to source maps

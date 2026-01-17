@@ -43,7 +43,9 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         void import("../app/sentry.client");
     }, []);
 
-    if (!import.meta.env.DEV) {
+    const shouldShowDevtools = import.meta.env.DEV && typeof window !== "undefined";
+
+    if (!shouldShowDevtools) {
         return (
             <html lang="en">
                 <head>
