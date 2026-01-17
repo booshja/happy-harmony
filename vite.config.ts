@@ -1,3 +1,5 @@
+import path from "node:path";
+
 import { cloudflare } from "@cloudflare/vite-plugin";
 import { sentryVitePlugin } from "@sentry/vite-plugin";
 import { tanstackStart } from "@tanstack/react-start/plugin/vite";
@@ -7,8 +9,15 @@ import viteTsConfigPaths from "vite-tsconfig-paths";
 
 import { parseBuildEnv } from "./src/config/validation";
 
-export default defineConfig(({ mode }) => {
-    const isCiOrSsr = process.env.VITEST === "true" || mode === "test";
+export default defineConfig((configEnv) => {
+    const { mode, ssrBuild } = configEnv as typeof configEnv & {
+        ssrBuild?: boolean;
+    };
+    const isTestLike =
+        ssrBuild ||
+        process.env.VITEST === "true" ||
+        process.env.PLAYWRIGHT_TEST === "true" ||
+        mode === "test";
 
     const shouldSkipEnvLoad = process.env.SKIP_ENV_LOAD === "true";
 
@@ -23,9 +32,15 @@ export default defineConfig(({ mode }) => {
     });
 
     const devtoolsStub = {
-        "@tanstack/react-devtools": "./src/stubs/devtools.tsx",
-        "@tanstack/react-router-devtools": "./src/stubs/devtools.tsx",
-        "@tanstack/react-query-devtools": "./src/stubs/devtools.tsx",
+        "@tanstack/react-devtools": path.resolve(__dirname, "src/stubs/devtools.tsx"),
+        "@tanstack/react-router-devtools": path.resolve(
+            __dirname,
+            "src/stubs/devtools.tsx",
+        ),
+        "@tanstack/react-query-devtools": path.resolve(
+            __dirname,
+            "src/stubs/devtools.tsx",
+        ),
     };
 
     const plugins = [
@@ -75,7 +90,7 @@ export default defineConfig(({ mode }) => {
     const config = {
         plugins,
         resolve: {
-            alias: isCiOrSsr ? devtoolsStub : {},
+            alias: isTestLike ? devtoolsStub : {},
         },
         build: {
             // Needed so Sentry can match uploaded artifacts to source maps

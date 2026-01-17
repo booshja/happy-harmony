@@ -48,6 +48,10 @@ export default defineConfig({
         url: BASE_URL,
         reuseExistingServer: !process.env.CI,
         stdout: "pipe",
+        env: {
+            ...process.env,
+            PLAYWRIGHT_TEST: "true",
+        },
     },
 
     /* Configure projects for major browsers */
