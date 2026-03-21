@@ -4,8 +4,10 @@
     "private": true,
     "type": "module",
     "scripts": {
-        "dev": "wrangler dev --port 3000",
+        "dev": "wrangler dev --env staging --port 3000",
         "dev:vite": "vite dev --port 3000",
+        "dev:prod": "wrangler dev --port 3000",
+        "preview:pr": "pnpm run build && wrangler versions upload --env staging",
         "start": "node .output/server/index.mjs",
         "build": "vite build",
         "serve": "vite preview",
@@ -31,7 +33,6 @@
         "clean": "rm -rf .turbo node_modules .wrangler .output dist",
         "deploy": "pnpm run build && wrangler deploy",
         "deploy:staging": "pnpm run build && wrangler deploy --env staging",
-        "deploy:production": "pnpm run build && wrangler deploy --env production",
         "preview": "pnpm run build && vite preview",
         "cf-typegen": "wrangler types"
     },
