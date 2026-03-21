@@ -29,3 +29,7 @@ pnpm-workspace.yaml
 # Wrangler
 .dev.vars
 !.dev.vars.example
+
+# AI files
+CLAUDE.md
+.ai-docs/
