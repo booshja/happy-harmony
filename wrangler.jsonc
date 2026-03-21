@@ -1,16 +1,35 @@
 {
-  "$schema": "./node_modules/wrangler/config-schema.json",
-  "name": "happy-harmony",
-  "main": "./node_modules/@tanstack/react-start/dist/default-entry/esm/server.js",
-  "compatibility_date": "2026-01-07",
-  "compatibility_flags": ["nodejs_compat", "remove_nodejs_compat_eol"],
-  "workers_dev": true,
-  "observability": { "enabled": true },
-  "env": {
-    "staging": {
-      "name": "happy-harmony-staging"
-    }
-  }
+	"$schema": "./node_modules/wrangler/config-schema.json",
+	"name": "happy-harmony",
+	"main": "./node_modules/@tanstack/react-start/dist/default-entry/esm/server.js",
+	"compatibility_date": "2026-01-07",
+	"compatibility_flags": [
+		"nodejs_compat",
+		"remove_nodejs_compat_eol"
+	],
+	"workers_dev": true,
+	"observability": {
+		"enabled": true
+	},
+	// Custom domain (app.happyharmony.dev) is attached in Cloudflare dashboard via Custom Domains.
+	// Do not add "route" here; we want to keep apex free for marketing pages.
+	"env": {
+		"staging": {
+			"name": "happy-harmony-staging",
+			"d1_databases": [
+				{
+					"binding": "DB",
+					"database_name": "happy-harmony-staging",
+					"database_id": "4cf700d6-e8d9-4006-b508-60c4a676d6fb"
+				}
+			]
+		}
+	},
+	"d1_databases": [
+		{
+			"binding": "DB",
+			"database_name": "happy-harmony-prod",
+			"database_id": "ed5427da-5ca4-419c-8408-d6b03620f748"
+		}
+	]
 }
-// Custom domain (app.happyharmony.dev) is attached in Cloudflare dashboard via Custom Domains.
-// Do not add "route" here; we want to keep apex free for "marketing page(s)".
