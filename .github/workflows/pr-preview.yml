@@ -140,12 +140,9 @@ jobs:
           node -e "
             const fs = require('fs');
             const base = JSON.parse(fs.readFileSync('dist/server/wrangler.json', 'utf8'));
-            const config = {
-              ...base,
-              name: 'happy-harmony-pr-${PR_NUMBER}',
-              d1_databases: [{ binding: 'DB', database_name: 'happy-harmony-staging', database_id: '4cf700d6-e8d9-4006-b508-60c4a676d6fb' }],
-              routes: [],
-            };
+            const source = JSON.parse(fs.readFileSync('wrangler.jsonc', 'utf8').replace(/^\s*\/\/.*$/gm, ''));
+            const stagingDb = source.env.staging.d1_databases;
+            const config = { ...base, name: 'happy-harmony-pr-${PR_NUMBER}', d1_databases: stagingDb, routes: [] };
             fs.writeFileSync('dist/server/wrangler.preview.json', JSON.stringify(config));
           "
           pnpm exec wrangler deploy --config dist/server/wrangler.preview.json
