@@ -32,7 +32,7 @@
         "check": "pnpm run typecheck && pnpm run lint && pnpm run test",
         "clean": "rm -rf .turbo node_modules .wrangler .output dist",
         "deploy": "pnpm run build && wrangler deploy",
-        "deploy:staging": "pnpm run build && wrangler deploy --env staging",
+        "deploy:staging": "pnpm run build && node scripts/write-staging-wrangler.mjs && wrangler deploy --config dist/server/wrangler.staging.json",
         "preview": "pnpm run build && vite preview",
         "cf-typegen": "wrangler types"
     },

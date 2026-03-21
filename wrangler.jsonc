@@ -12,15 +12,15 @@
 		"enabled": true
 	},
 	// Custom domains are managed here via wrangler.jsonc (not the Cloudflare dashboard).
-	// Do not add "route" here; we want to keep the apex happyharmony.dev free for marketing pages.
-	"custom_domains": [
-		{ "pattern": "app.happyharmony.dev" }
+	// Using routes with custom_domain:true — subdomain routes do not affect the apex (happyharmony.dev stays free for marketing).
+	"routes": [
+		{ "pattern": "app.happyharmony.dev", "custom_domain": true }
 	],
 	"env": {
 		"staging": {
 			"name": "happy-harmony-staging",
-			"custom_domains": [
-				{ "pattern": "staging.happyharmony.dev" }
+			"routes": [
+				{ "pattern": "staging.happyharmony.dev", "custom_domain": true }
 			],
 			"d1_databases": [
 				{
