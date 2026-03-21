@@ -52,7 +52,7 @@ This project separates **build-time** variables (used by Vite/CI tooling) from *
 
 - **CI build-time Sentry vars** (`VITE_SENTRY_ORG`, `VITE_SENTRY_PROJECT`, `SENTRY_AUTH_TOKEN`, `CI`) are configured in the CI environment (match `.env.example` keys).
 
-- **Domains:** staging uses the default `*.workers.dev` URL; production uses the custom domain `app.happyharmony.dev`.
+- **Domains:** staging uses `staging.happyharmony.dev`; production uses `app.happyharmony.dev`. Both are configured as Custom Domains in `wrangler.jsonc`.
 
 - **Rule:** runtime env must be read only through `getRuntimeEnv()` inside server code.
 
@@ -76,10 +76,12 @@ This project separates **build-time** variables (used by Vite/CI tooling) from *
 
 ## Deployment & domains
 
-- `workers_dev` is enabled so deploys always have a `*.workers.dev` URL available (used for staging and debugging).
-- Staging deploys use the `*.workers.dev` URL (no custom domain).
-- Production is served from the **Custom Domain** `app.happyharmony.dev`, managed in the Cloudflare dashboard.
+- `workers_dev` is enabled so deploys always have a `*.workers.dev` URL available (used for PR previews and debugging).
+- Staging is served from the **Custom Domain** `staging.happyharmony.dev`, configured via `wrangler.jsonc`.
+- Production is served from the **Custom Domain** `app.happyharmony.dev`, configured via `wrangler.jsonc`.
+- HTTPS is enforced automatically at Cloudflare's edge for both custom domains (no cert management needed).
 - **Do not configure `route` patterns in `wrangler.jsonc`** (we intentionally keep the apex `happyharmony.dev` free for marketing later).
+- PR previews use ephemeral `happy-harmony-pr-<N>.workers.dev` URLs (no custom domain).
 
 ## Environment variable reference
 
