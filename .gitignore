@@ -27,6 +27,7 @@ pnpm-workspace.yaml
 /playwright/.auth/
 
 # Wrangler
+.wrangler/
 .dev.vars
 !.dev.vars.example
 

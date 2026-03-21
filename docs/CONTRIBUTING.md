@@ -9,6 +9,8 @@
 
 - Install deps: `pnpm install`
 - Husky hooks install via `pnpm prepare` (runs automatically on install)
+- Copy `.dev.vars.example` → `.dev.vars` and fill in values
+- Apply local DB migrations: `pnpm db:migrate`
 
 ## Everyday commands
 

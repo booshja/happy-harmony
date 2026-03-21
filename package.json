@@ -34,7 +34,12 @@
         "deploy": "pnpm run build && wrangler deploy",
         "deploy:staging": "pnpm run build && node scripts/write-staging-wrangler.mjs && wrangler deploy --config dist/server/wrangler.staging.json",
         "preview": "pnpm run build && vite preview",
-        "cf-typegen": "wrangler types"
+        "cf-typegen": "wrangler types",
+        "db:generate": "drizzle-kit generate",
+        "db:migrate": "wrangler d1 migrations apply DB --local",
+        "db:migrate:staging": "wrangler d1 migrations apply DB --env staging --remote",
+        "db:seed": "wrangler d1 execute DB --local --file=./drizzle/seeds/seed.sql",
+        "db:reset": "rm -rf .wrangler/state/v3/d1 && pnpm db:migrate"
     },
     "dependencies": {
         "@cloudflare/vite-plugin": "^1.20.1",
