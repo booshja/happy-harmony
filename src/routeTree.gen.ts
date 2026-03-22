@@ -9,180 +9,135 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from "./routes/__root";
-import { Route as IndexRouteImport } from "./routes/index";
-import { Route as DemoTanstackQueryRouteImport } from "./routes/demo.tanstack-query";
-import { Route as ApiDemoTqTodosRouteImport } from "./routes/api.demo-tq-todos";
-import { Route as ApiDemoNamesRouteImport } from "./routes/api.demo-names";
-import { Route as DemoStartServerFuncsRouteImport } from "./routes/demo.start.server-funcs";
-import { Route as DemoStartApiRequestRouteImport } from "./routes/demo.start.api-request";
-import { Route as DemoSentryTestingRouteImport } from "./routes/demo.sentry.testing";
+import { Route as SignupRouteImport } from "./routes/signup";
+import { Route as LoginRouteImport } from "./routes/login";
+import { Route as AuthenticatedRouteImport } from "./routes/_authenticated";
+import { Route as AuthenticatedIndexRouteImport } from "./routes/_authenticated.index";
+import { Route as ApiAuthSplatRouteImport } from "./routes/api.auth.$";
 
-const IndexRoute = IndexRouteImport.update({
+const SignupRoute = SignupRouteImport.update({
+    id: "/signup",
+    path: "/signup",
+    getParentRoute: () => rootRouteImport,
+} as any);
+const LoginRoute = LoginRouteImport.update({
+    id: "/login",
+    path: "/login",
+    getParentRoute: () => rootRouteImport,
+} as any);
+const AuthenticatedRoute = AuthenticatedRouteImport.update({
+    id: "/_authenticated",
+    getParentRoute: () => rootRouteImport,
+} as any);
+const AuthenticatedIndexRoute = AuthenticatedIndexRouteImport.update({
     id: "/",
     path: "/",
-    getParentRoute: () => rootRouteImport,
+    getParentRoute: () => AuthenticatedRoute,
 } as any);
-const DemoTanstackQueryRoute = DemoTanstackQueryRouteImport.update({
-    id: "/demo/tanstack-query",
-    path: "/demo/tanstack-query",
-    getParentRoute: () => rootRouteImport,
-} as any);
-const ApiDemoTqTodosRoute = ApiDemoTqTodosRouteImport.update({
-    id: "/api/demo-tq-todos",
-    path: "/api/demo-tq-todos",
-    getParentRoute: () => rootRouteImport,
-} as any);
-const ApiDemoNamesRoute = ApiDemoNamesRouteImport.update({
-    id: "/api/demo-names",
-    path: "/api/demo-names",
-    getParentRoute: () => rootRouteImport,
-} as any);
-const DemoStartServerFuncsRoute = DemoStartServerFuncsRouteImport.update({
-    id: "/demo/start/server-funcs",
-    path: "/demo/start/server-funcs",
-    getParentRoute: () => rootRouteImport,
-} as any);
-const DemoStartApiRequestRoute = DemoStartApiRequestRouteImport.update({
-    id: "/demo/start/api-request",
-    path: "/demo/start/api-request",
-    getParentRoute: () => rootRouteImport,
-} as any);
-const DemoSentryTestingRoute = DemoSentryTestingRouteImport.update({
-    id: "/demo/sentry/testing",
-    path: "/demo/sentry/testing",
+const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
+    id: "/api/auth/$",
+    path: "/api/auth/$",
     getParentRoute: () => rootRouteImport,
 } as any);
 
 export interface FileRoutesByFullPath {
-    "/": typeof IndexRoute;
-    "/api/demo-names": typeof ApiDemoNamesRoute;
-    "/api/demo-tq-todos": typeof ApiDemoTqTodosRoute;
-    "/demo/tanstack-query": typeof DemoTanstackQueryRoute;
-    "/demo/sentry/testing": typeof DemoSentryTestingRoute;
-    "/demo/start/api-request": typeof DemoStartApiRequestRoute;
-    "/demo/start/server-funcs": typeof DemoStartServerFuncsRoute;
+    "/login": typeof LoginRoute;
+    "/signup": typeof SignupRoute;
+    "/": typeof AuthenticatedIndexRoute;
+    "/api/auth/$": typeof ApiAuthSplatRoute;
 }
 export interface FileRoutesByTo {
-    "/": typeof IndexRoute;
-    "/api/demo-names": typeof ApiDemoNamesRoute;
-    "/api/demo-tq-todos": typeof ApiDemoTqTodosRoute;
-    "/demo/tanstack-query": typeof DemoTanstackQueryRoute;
-    "/demo/sentry/testing": typeof DemoSentryTestingRoute;
-    "/demo/start/api-request": typeof DemoStartApiRequestRoute;
-    "/demo/start/server-funcs": typeof DemoStartServerFuncsRoute;
+    "/login": typeof LoginRoute;
+    "/signup": typeof SignupRoute;
+    "/": typeof AuthenticatedIndexRoute;
+    "/api/auth/$": typeof ApiAuthSplatRoute;
 }
 export interface FileRoutesById {
     __root__: typeof rootRouteImport;
-    "/": typeof IndexRoute;
-    "/api/demo-names": typeof ApiDemoNamesRoute;
-    "/api/demo-tq-todos": typeof ApiDemoTqTodosRoute;
-    "/demo/tanstack-query": typeof DemoTanstackQueryRoute;
-    "/demo/sentry/testing": typeof DemoSentryTestingRoute;
-    "/demo/start/api-request": typeof DemoStartApiRequestRoute;
-    "/demo/start/server-funcs": typeof DemoStartServerFuncsRoute;
+    "/_authenticated": typeof AuthenticatedRouteWithChildren;
+    "/login": typeof LoginRoute;
+    "/signup": typeof SignupRoute;
+    "/_authenticated/": typeof AuthenticatedIndexRoute;
+    "/api/auth/$": typeof ApiAuthSplatRoute;
 }
 export interface FileRouteTypes {
     fileRoutesByFullPath: FileRoutesByFullPath;
-    fullPaths:
-        | "/"
-        | "/api/demo-names"
-        | "/api/demo-tq-todos"
-        | "/demo/tanstack-query"
-        | "/demo/sentry/testing"
-        | "/demo/start/api-request"
-        | "/demo/start/server-funcs";
+    fullPaths: "/login" | "/signup" | "/" | "/api/auth/$";
     fileRoutesByTo: FileRoutesByTo;
-    to:
-        | "/"
-        | "/api/demo-names"
-        | "/api/demo-tq-todos"
-        | "/demo/tanstack-query"
-        | "/demo/sentry/testing"
-        | "/demo/start/api-request"
-        | "/demo/start/server-funcs";
+    to: "/login" | "/signup" | "/" | "/api/auth/$";
     id:
         | "__root__"
-        | "/"
-        | "/api/demo-names"
-        | "/api/demo-tq-todos"
-        | "/demo/tanstack-query"
-        | "/demo/sentry/testing"
-        | "/demo/start/api-request"
-        | "/demo/start/server-funcs";
+        | "/_authenticated"
+        | "/login"
+        | "/signup"
+        | "/_authenticated/"
+        | "/api/auth/$";
     fileRoutesById: FileRoutesById;
 }
 export interface RootRouteChildren {
-    IndexRoute: typeof IndexRoute;
-    ApiDemoNamesRoute: typeof ApiDemoNamesRoute;
-    ApiDemoTqTodosRoute: typeof ApiDemoTqTodosRoute;
-    DemoTanstackQueryRoute: typeof DemoTanstackQueryRoute;
-    DemoSentryTestingRoute: typeof DemoSentryTestingRoute;
-    DemoStartApiRequestRoute: typeof DemoStartApiRequestRoute;
-    DemoStartServerFuncsRoute: typeof DemoStartServerFuncsRoute;
+    AuthenticatedRoute: typeof AuthenticatedRouteWithChildren;
+    LoginRoute: typeof LoginRoute;
+    SignupRoute: typeof SignupRoute;
+    ApiAuthSplatRoute: typeof ApiAuthSplatRoute;
 }
 
 declare module "@tanstack/react-router" {
     interface FileRoutesByPath {
-        "/": {
-            id: "/";
+        "/signup": {
+            id: "/signup";
+            path: "/signup";
+            fullPath: "/signup";
+            preLoaderRoute: typeof SignupRouteImport;
+            parentRoute: typeof rootRouteImport;
+        };
+        "/login": {
+            id: "/login";
+            path: "/login";
+            fullPath: "/login";
+            preLoaderRoute: typeof LoginRouteImport;
+            parentRoute: typeof rootRouteImport;
+        };
+        "/_authenticated": {
+            id: "/_authenticated";
+            path: "";
+            fullPath: "";
+            preLoaderRoute: typeof AuthenticatedRouteImport;
+            parentRoute: typeof rootRouteImport;
+        };
+        "/_authenticated/": {
+            id: "/_authenticated/";
             path: "/";
             fullPath: "/";
-            preLoaderRoute: typeof IndexRouteImport;
-            parentRoute: typeof rootRouteImport;
+            preLoaderRoute: typeof AuthenticatedIndexRouteImport;
+            parentRoute: typeof AuthenticatedRoute;
         };
-        "/demo/tanstack-query": {
-            id: "/demo/tanstack-query";
-            path: "/demo/tanstack-query";
-            fullPath: "/demo/tanstack-query";
-            preLoaderRoute: typeof DemoTanstackQueryRouteImport;
-            parentRoute: typeof rootRouteImport;
-        };
-        "/api/demo-tq-todos": {
-            id: "/api/demo-tq-todos";
-            path: "/api/demo-tq-todos";
-            fullPath: "/api/demo-tq-todos";
-            preLoaderRoute: typeof ApiDemoTqTodosRouteImport;
-            parentRoute: typeof rootRouteImport;
-        };
-        "/api/demo-names": {
-            id: "/api/demo-names";
-            path: "/api/demo-names";
-            fullPath: "/api/demo-names";
-            preLoaderRoute: typeof ApiDemoNamesRouteImport;
-            parentRoute: typeof rootRouteImport;
-        };
-        "/demo/start/server-funcs": {
-            id: "/demo/start/server-funcs";
-            path: "/demo/start/server-funcs";
-            fullPath: "/demo/start/server-funcs";
-            preLoaderRoute: typeof DemoStartServerFuncsRouteImport;
-            parentRoute: typeof rootRouteImport;
-        };
-        "/demo/start/api-request": {
-            id: "/demo/start/api-request";
-            path: "/demo/start/api-request";
-            fullPath: "/demo/start/api-request";
-            preLoaderRoute: typeof DemoStartApiRequestRouteImport;
-            parentRoute: typeof rootRouteImport;
-        };
-        "/demo/sentry/testing": {
-            id: "/demo/sentry/testing";
-            path: "/demo/sentry/testing";
-            fullPath: "/demo/sentry/testing";
-            preLoaderRoute: typeof DemoSentryTestingRouteImport;
+        "/api/auth/$": {
+            id: "/api/auth/$";
+            path: "/api/auth/$";
+            fullPath: "/api/auth/$";
+            preLoaderRoute: typeof ApiAuthSplatRouteImport;
             parentRoute: typeof rootRouteImport;
         };
     }
 }
 
+interface AuthenticatedRouteChildren {
+    AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute;
+}
+
+const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
+    AuthenticatedIndexRoute: AuthenticatedIndexRoute,
+};
+
+const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
+    AuthenticatedRouteChildren,
+);
+
 const rootRouteChildren: RootRouteChildren = {
-    IndexRoute: IndexRoute,
-    ApiDemoNamesRoute: ApiDemoNamesRoute,
-    ApiDemoTqTodosRoute: ApiDemoTqTodosRoute,
-    DemoTanstackQueryRoute: DemoTanstackQueryRoute,
-    DemoSentryTestingRoute: DemoSentryTestingRoute,
-    DemoStartApiRequestRoute: DemoStartApiRequestRoute,
-    DemoStartServerFuncsRoute: DemoStartServerFuncsRoute,
+    AuthenticatedRoute: AuthenticatedRouteWithChildren,
+    LoginRoute: LoginRoute,
+    SignupRoute: SignupRoute,
+    ApiAuthSplatRoute: ApiAuthSplatRoute,
 };
 export const routeTree = rootRouteImport
     ._addFileChildren(rootRouteChildren)
