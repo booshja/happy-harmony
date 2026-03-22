@@ -1,2 +1,113 @@
-// Schema tables will be defined here in JANDES-86.
-export {};
+import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
+
+// -- better-auth tables --
+
+export const user = sqliteTable("user", {
+    id: text("id").primaryKey(),
+    name: text("name").notNull(),
+    email: text("email").notNull().unique(),
+    emailVerified: integer("emailVerified", { mode: "boolean" })
+        .notNull()
+        .default(false),
+    image: text("image"),
+    createdAt: integer("createdAt", { mode: "timestamp_ms" }).notNull(),
+    updatedAt: integer("updatedAt", { mode: "timestamp_ms" }).notNull(),
+});
+
+export const session = sqliteTable("session", {
+    id: text("id").primaryKey(),
+    expiresAt: integer("expiresAt", { mode: "timestamp_ms" }).notNull(),
+    token: text("token").notNull().unique(),
+    createdAt: integer("createdAt", { mode: "timestamp_ms" }).notNull(),
+    updatedAt: integer("updatedAt", { mode: "timestamp_ms" }).notNull(),
+    ipAddress: text("ipAddress"),
+    userAgent: text("userAgent"),
+    userId: text("userId")
+        .notNull()
+        .references(() => user.id, { onDelete: "cascade" }),
+});
+
+export const account = sqliteTable("account", {
+    id: text("id").primaryKey(),
+    accountId: text("accountId").notNull(),
+    providerId: text("providerId").notNull(),
+    userId: text("userId")
+        .notNull()
+        .references(() => user.id, { onDelete: "cascade" }),
+    accessToken: text("accessToken"),
+    refreshToken: text("refreshToken"),
+    idToken: text("idToken"),
+    accessTokenExpiresAt: integer("accessTokenExpiresAt", {
+        mode: "timestamp_ms",
+    }),
+    refreshTokenExpiresAt: integer("refreshTokenExpiresAt", {
+        mode: "timestamp_ms",
+    }),
+    scope: text("scope"),
+    password: text("password"),
+    createdAt: integer("createdAt", { mode: "timestamp_ms" }).notNull(),
+    updatedAt: integer("updatedAt", { mode: "timestamp_ms" }).notNull(),
+});
+
+export const verification = sqliteTable("verification", {
+    id: text("id").primaryKey(),
+    identifier: text("identifier").notNull(),
+    value: text("value").notNull(),
+    expiresAt: integer("expiresAt", { mode: "timestamp_ms" }).notNull(),
+    createdAt: integer("createdAt", { mode: "timestamp_ms" }),
+    updatedAt: integer("updatedAt", { mode: "timestamp_ms" }),
+});
+
+// -- app tables --
+
+export const category = sqliteTable("category", {
+    id: integer("id").primaryKey({ autoIncrement: true }),
+    displayId: text("displayId").notNull().unique(),
+    userId: text("userId")
+        .notNull()
+        .references(() => user.id, { onDelete: "cascade" }),
+    name: text("name").notNull(),
+    description: text("description").notNull(),
+    createdAt: integer("createdAt", { mode: "timestamp_ms" }).notNull(),
+    updatedAt: integer("updatedAt", { mode: "timestamp_ms" }).notNull(),
+});
+
+export const activity = sqliteTable("activity", {
+    id: integer("id").primaryKey({ autoIncrement: true }),
+    displayId: text("displayId").notNull().unique(),
+    userId: text("userId")
+        .notNull()
+        .references(() => user.id, { onDelete: "cascade" }),
+    categoryId: integer("categoryId").references(() => category.id, {
+        onDelete: "set null",
+    }),
+    name: text("name").notNull(),
+    description: text("description").notNull(),
+    duration: text("duration", {
+        enum: [
+            "5 min",
+            "10-15 min",
+            "30 min",
+            "1 hour",
+            "3 hours",
+            "Half day",
+            "Full day",
+        ],
+    }).notNull(),
+    createdAt: integer("createdAt", { mode: "timestamp_ms" }).notNull(),
+    updatedAt: integer("updatedAt", { mode: "timestamp_ms" }).notNull(),
+});
+
+export const suggestionHistory = sqliteTable("suggestionHistory", {
+    id: integer("id").primaryKey({ autoIncrement: true }),
+    displayId: text("displayId").notNull().unique(),
+    userId: text("userId")
+        .notNull()
+        .references(() => user.id, { onDelete: "cascade" }),
+    activityId: integer("activityId").references(() => activity.id, {
+        onDelete: "set null",
+    }),
+    userInput: text("userInput").notNull(),
+    suggestionOutput: text("suggestionOutput").notNull(),
+    createdAt: integer("createdAt", { mode: "timestamp_ms" }).notNull(),
+});
