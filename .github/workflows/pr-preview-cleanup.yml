@@ -39,4 +39,4 @@ jobs:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: |
-          pnpm exec wrangler delete --env staging --name "happy-harmony-pr-${PR_NUMBER}" --force
+          pnpm exec wrangler delete --env staging --name "happy-harmony-pr-${PR_NUMBER}" --force || true
