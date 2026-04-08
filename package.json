@@ -58,7 +58,7 @@
         "aws4fetch": "^1.0.20",
         "better-auth": "^1.4.10",
         "dotenv": "^17.2.3",
-        "drizzle-orm": "^0.45.1",
+        "drizzle-orm": "^0.45.2",
         "eslint": "link:@tanstack/config/eslint",
         "eslint-plugin-react": "^7.37.5",
         "ohash": "^2.0.11",
