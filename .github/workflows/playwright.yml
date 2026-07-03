@@ -4,16 +4,13 @@ on:
     branches: [mainline]
   pull_request:
     branches: [mainline]
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   test:
     timeout-minutes: 60
     runs-on: ubuntu-latest
-    environment: production
-    env:
-      VITE_SENTRY_DSN: ${{ vars.VITE_SENTRY_DSN }}
-      VITE_SENTRY_ORG: ${{ vars.VITE_SENTRY_ORG }}
-      VITE_SENTRY_PROJECT: ${{ vars.VITE_SENTRY_PROJECT }}
-      SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
     steps:
       - uses: actions/checkout@v4
       - name: Setup pnpm
@@ -34,6 +31,8 @@ jobs:
           key: ${{ runner.os }}-playwright-${{ hashFiles('pnpm-lock.yaml') }}
           restore-keys: |
             ${{ runner.os }}-playwright-
+      - name: Setup test environment
+        run: cp .dev.vars.test .dev.vars
       - name: Install Playwright Browsers
         run: pnpm exec playwright install --with-deps
       - name: Run Playwright tests

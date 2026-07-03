@@ -1,6 +1,6 @@
 import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
-import {  useState } from "react";
-import type {FormEvent} from "react";
+import { useState } from "react";
+import type { FormEvent } from "react";
 
 import { authClient } from "../auth/client";
 
@@ -79,7 +79,11 @@ function SignupPage() {
                         minLength={8}
                     />
                 </div>
-                {error && <p style={{ color: "red" }}>{error}</p>}
+                {error && (
+                    <p data-testid="auth-error" style={{ color: "red" }}>
+                        {error}
+                    </p>
+                )}
                 <button type="submit" disabled={loading}>
                     {loading ? "Creating account..." : "Sign Up"}
                 </button>

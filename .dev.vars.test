@@ -1,0 +1,6 @@
+AUTH_SECRET=playwright-test-secret-not-for-production
+BETTER_AUTH_URL=http://localhost:3000
+AWS_REGION=us-east-1
+AWS_ACCESS_KEY_ID=test
+AWS_SECRET_ACCESS_KEY=test
+SES_FROM_EMAIL=test@test.com
