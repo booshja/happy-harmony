@@ -1,6 +1,7 @@
 # Rules
 
 - When creating any docs, write them to @.ai-docs
+- Changesets are used and required for PR's to pass the pipeline
 
 ## Code quality rules
 

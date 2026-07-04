@@ -1,15 +1,28 @@
 import { z } from "zod";
 import type { ZodIssue } from "zod";
 
-export const buildEnvSchema = z
-    .object({
-        VITE_SENTRY_ORG: z.string().trim().optional(),
-        VITE_SENTRY_PROJECT: z.string().trim().optional(),
-        SENTRY_AUTH_TOKEN: z.string().trim().optional(),
-        CI: z.coerce.boolean().optional().default(false),
-    })
-    .superRefine((data, ctx) => {
-        if (!data.CI) return;
+const baseBuildEnvSchema = z.object({
+    VITE_SENTRY_ORG: z.string().trim().optional(),
+    VITE_SENTRY_PROJECT: z.string().trim().optional(),
+    SENTRY_AUTH_TOKEN: z.string().trim().optional(),
+    CI: z.coerce.boolean().optional().default(false),
+});
+
+export type BuildEnv = z.infer<typeof baseBuildEnvSchema>;
+
+export interface ParseBuildEnvOptions {
+    /**
+     * Require Sentry source-map upload credentials when running in CI.
+     * These are only needed for production builds that upload source maps;
+     * the dev server (e.g. Playwright E2E) never uploads them, so callers
+     * that only start a dev server should leave this disabled.
+     */
+    requireSentryInCi?: boolean;
+}
+
+function buildEnvSchemaFor(requireSentryInCi: boolean) {
+    return baseBuildEnvSchema.superRefine((data, ctx) => {
+        if (!requireSentryInCi || !data.CI) return;
 
         const requiredWhenCiIsTrue: Array<
             [
@@ -32,13 +45,14 @@ export const buildEnvSchema = z
             });
         });
     });
-
-export type BuildEnv = z.infer<typeof buildEnvSchema>;
+}
 
 export function parseBuildEnv(
     env: NodeJS.ProcessEnv | Record<string, string>,
+    options: ParseBuildEnvOptions = {},
 ): BuildEnv {
-    const result = buildEnvSchema.safeParse(env);
+    const { requireSentryInCi = true } = options;
+    const result = buildEnvSchemaFor(requireSentryInCi).safeParse(env);
 
     if (result.success) return result.data;
 
