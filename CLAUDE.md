@@ -2,6 +2,7 @@
 
 - When creating any docs, write them to @.ai-docs
 - Changesets are used and required for PR's to pass the pipeline
+- Never use `git add -A`, always explicitly stage files
 
 ## Code quality rules
 
@@ -40,3 +41,4 @@
 - Full check: `pnpm run check`
 - Build: `pnpm run build`
 - Deploy target: Cloudflare Workers (via `wrangler deploy`) — run only if explicitly requested.
+- Changeset: `pnpm run changeset`
