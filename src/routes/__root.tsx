@@ -6,14 +6,21 @@ import {
 } from "@tanstack/react-router";
 import { Suspense, lazy, useEffect } from "react";
 
+import type { getSessionFn } from "../auth/session";
 import Header from "../components/Header";
 import appCss from "../styles.css?url";
 
 interface MyRouterContext {
     queryClient: QueryClient;
+    session: Awaited<ReturnType<typeof getSessionFn>>;
 }
 
 export const Route = createRootRouteWithContext<MyRouterContext>()({
+    beforeLoad: async () => {
+        const { getSessionFn: getSession } = await import("../auth/session");
+        const session = await getSession();
+        return { session };
+    },
     head: () => ({
         meta: [
             {

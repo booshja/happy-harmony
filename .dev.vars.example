@@ -1,6 +1,17 @@
+# Runtime environment variables for Cloudflare Workers
+# Copy to .dev.vars and fill in real values
+
+# BetterAuth session signing secret (any random string, min 32 chars)
 AUTH_SECRET=
-AWS_REGION=
+
+# Base URL for BetterAuth callbacks (must match your dev server port)
+BETTER_AUTH_URL=http://localhost:3000
+
+# AWS SES email sending
+AWS_REGION=us-west-2
 AWS_ACCESS_KEY_ID=
 AWS_SECRET_ACCESS_KEY=
 SES_FROM_EMAIL=
-SENTRY_DSN=
+
+# Sentry error tracking (optional)
+# SENTRY_DSN=

@@ -12,6 +12,7 @@ const runtimeEnvSchema = z.object({
         .min(1, "AWS_SECRET_ACCESS_KEY is required")
         .trim(),
     SES_FROM_EMAIL: z.string().email("SES_FROM_EMAIL must be a valid email").trim(),
+    BETTER_AUTH_URL: z.string().url("BETTER_AUTH_URL must be a valid URL").trim(),
     SENTRY_DSN: z.string().trim().optional(),
 });
 

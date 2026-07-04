@@ -1,13 +1,13 @@
 import { expect, test } from "@playwright/test";
 
-test("home page renders baseline content", async ({ page }) => {
+test("unauthenticated visit redirects to login", async ({ page }) => {
     await page.goto("/");
 
+    await page.waitForURL(/\/login/);
+
     await expect(page).toHaveTitle(/Happy Harmony/i);
-    await expect(page.getByRole("link", { name: "Home" })).toBeVisible();
-    await expect(
-        page.getByText("Edit src/routes/index.tsx and save to reload."),
-    ).toBeVisible();
-    await expect(page.getByRole("link", { name: "Learn React" })).toBeVisible();
-    await expect(page.getByRole("link", { name: "Learn TanStack" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Log In" })).toBeVisible();
+    await expect(page.locator("#email")).toBeVisible();
+    await expect(page.locator("#password")).toBeVisible();
+    await expect(page.getByRole("button", { name: "Log In" })).toBeVisible();
 });

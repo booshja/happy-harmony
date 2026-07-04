@@ -26,11 +26,16 @@ export default defineConfig((configEnv) => {
         ? {}
         : loadEnv(mode, process.cwd(), "");
 
-    // Load .env files into process.env for the current mode
-    const env = parseBuildEnv({
-        ...process.env,
-        ...envFromFiles,
-    });
+    // Load .env files into process.env for the current mode.
+    // Sentry source-map upload credentials are only required for production
+    // builds; the dev server (e.g. Playwright E2E) never uploads source maps.
+    const env = parseBuildEnv(
+        {
+            ...process.env,
+            ...envFromFiles,
+        },
+        { requireSentryInCi: command === "build" },
+    );
 
     const devtoolsStub = {
         "@tanstack/react-devtools": path.resolve(__dirname, "src/stubs/devtools.tsx"),
