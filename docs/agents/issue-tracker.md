@@ -23,17 +23,25 @@ Inside the sandcastle sandbox there is **no MCP** — the plan/implement/merge p
 
 All three POST to `https://api.linear.app/graphql` with `Authorization: $LINEAR_API_KEY` (raw, no `Bearer`) and `Content-Type: application/json`, piping through `jq`.
 
-- **List** (in `plan-prompt.md`) — open, agent-ready issues in the project, as a JSON array of `{id, title, body}`. Filtered to `project == Happy Harmony`, label `ready-for-agent`, and workflow-state type **not** `completed`/`canceled`:
+- **List** (in `plan-prompt.md`) — open, agent-ready, **unblocked** issues in the project, as a JSON array of `{id, title, body}`. The API filter selects `project == Happy Harmony`, label `ready-for-agent`, and workflow-state type **not** `completed`/`canceled`; the query also pulls each candidate's own labels plus its blocking relations so `jq` can apply two gates the `issueFilter` can't express:
 
     ```
     query { issues(first: 250, filter: {
       project: { id: { eq: "e083d04b-0285-472e-9316-7115a505d2c3" } },
       labels:  { name: { eq: "ready-for-agent" } },
       state:   { type: { nin: ["completed", "canceled"] } }
-    }) { nodes { identifier title description } } }
+    }) { nodes {
+      identifier title description
+      labels { nodes { name } }
+      inverseRelations { nodes { type issue { state { type } } } }
+    } } }
     ```
 
-    `jq '[.data.issues.nodes[] | {id: .identifier, title: .title, body: .description}]'` reshapes `identifier`→`id` and `description`→`body`. An empty array (no `ready-for-agent` issues) is expected and makes the loop exit cleanly — the label is the opt-in gate for AFK work.
+    The `jq` reshapes `identifier`→`id` / `description`→`body`, then applies:
+    - **Blocker gate** — keeps an issue only if every issue it is _blocked-by_ is in a terminal state (`completed`/`canceled`). An issue's blockers are its `inverseRelations` nodes with `type == "blocks"` (the blocker is that relation's `.issue`, verified against the live API); this mirrors the wayfinder terminal-state rule below. It lets every issue in a slice carry `ready-for-agent` up front — the loop **self-orders** by relation instead of needing manual promotion, and the planner's own file-conflict check is a second, softer pass on the survivors.
+    - **`do-not-proceed` gate** — drops any candidate carrying the `do-not-proceed` label. A held issue never reaches a terminal state, so everything it blocks stays gated transitively — a movable **slice-boundary brake**: put it on the first issue you want the loop to stop _before_. See `triage-labels.md`.
+
+    An empty array (nothing ready and unblocked) is expected and makes the loop exit cleanly — `ready-for-agent` is the opt-in gate, `do-not-proceed` the hard brake.
 
 - **View `<ID>`** (in `implement-prompt.md`) — `query { issue(id: "<ID>") { ... } }`. Linear's `issue(id:)` accepts the human identifier (`JANDES-123`) as well as the UUID.
 

@@ -6,6 +6,8 @@ Pull in the issue using `curl -sS -X POST https://api.linear.app/graphql -H "Aut
 
 Only work on the issue specified.
 
+If the issue carries a `do-not-proceed` label, stop immediately — it is a human-gated hard stop. Do **not** implement it and make **no** commits; leave a comment noting it is held, then output <promise>COMPLETE</promise>. Never override this because the issue looks ready.
+
 Work on branch {{BRANCH}}. Make commits and run tests.
 
 # CONTEXT
