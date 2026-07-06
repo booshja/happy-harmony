@@ -1,6 +1,5 @@
 # Rules
 
-- When creating any docs, write them to @.ai-docs
 - Changesets are used and required for PR's to pass the pipeline
 - Never use `git add -A`, always explicitly stage files
 
@@ -11,7 +10,6 @@
 
 ## Non‑permitted actions
 
-- Do not run database/schema migrations unless explicitly asked and approved (Drizzle included).
 - Do not guess credentials, tokens, or production URLs.
 - Do not run `wrangler deploy` or touch Cloudflare envs/config unless explicitly requested.
 - Avoid changing infra/deploy/CI configs (e.g., `wrangler.toml`, GitHub Actions) unless asked.
@@ -42,3 +40,17 @@
 - Build: `pnpm run build`
 - Deploy target: Cloudflare Workers (via `wrangler deploy`) — run only if explicitly requested.
 - Changeset: `pnpm run changeset`
+
+## Agent skills
+
+### Issue tracker
+
+Issues and PRDs live as **Linear issues** (team `JANDES`, project `Happy Harmony`), driven through the Linear MCP server — not a shell CLI. Linear doesn't host PRs, so there's no PR triage surface. See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+Five canonical triage roles, each mapped to its default label string (`needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`). See `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+Single-context: one `CONTEXT.md` + `docs/adr/` at the repo root. See `docs/agents/domain.md`.
