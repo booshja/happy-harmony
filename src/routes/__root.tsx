@@ -4,6 +4,7 @@ import {
     Scripts,
     createRootRouteWithContext,
 } from "@tanstack/react-router";
+import { createClientOnlyFn } from "@tanstack/react-start";
 import { Suspense, lazy, useEffect } from "react";
 
 import type { getSessionFn } from "../auth/session";
@@ -45,9 +46,16 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
     shellComponent: RootDocument,
 });
 
+// Load the browser Sentry SDK only on the client. Wrapping the dynamic import in
+// createClientOnlyFn strips it from the server bundle, satisfying TanStack Start's
+// import-protection (which denies importing `*.client.*` from server-reachable code).
+const initSentryClient = createClientOnlyFn(() => {
+    void import("../app/sentry.client");
+});
+
 function RootDocument({ children }: { children: React.ReactNode }) {
     useEffect(() => {
-        void import("../app/sentry.client");
+        initSentryClient();
     }, []);
 
     const shouldShowDevtools =
