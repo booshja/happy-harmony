@@ -69,6 +69,7 @@
         "zustand": "^5.0.9"
     },
     "devDependencies": {
+        "@ai-hero/sandcastle": "^0.12.0",
         "@changesets/cli": "^2.29.8",
         "@cloudflare/workers-types": "^4.20260109.0",
         "@playwright/test": "^1.57.0",

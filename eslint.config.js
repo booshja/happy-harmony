@@ -19,6 +19,7 @@ const ignoredPaths = [
     "playwright-report",
     "blob-report",
     ".ai-docs",
+    ".sandcastle",
     ".vscode",
     "eslint.config.js",
     "prettier.config.js",
