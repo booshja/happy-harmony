@@ -3,10 +3,10 @@ import { createMiddleware, createStart } from "@tanstack/react-start";
 import { Sentry } from "./sentry.server";
 
 const sentryFunctionMiddleware = createMiddleware({ type: "function" }).server(
-    async ({ next, functionId, method }) =>
+    async ({ next, serverFnMeta, method }) =>
         Sentry.startSpan(
             {
-                name: functionId,
+                name: serverFnMeta.id,
                 op: `server.fn.${method}`,
             },
             () => next(),
