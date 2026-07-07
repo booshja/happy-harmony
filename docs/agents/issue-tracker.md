@@ -13,7 +13,7 @@ Linear has no first-party CLI; the MCP server is the agent interface. It support
 - **Headless (sandboxed / Ralph-loop, e.g. sandcastle).** No MCP client and no browser OAuth in a sandbox, so the loop calls the **raw GraphQL API** (`https://api.linear.app/graphql`) directly with `curl` + `jq`, authenticated with a **scoped personal API key** in the header. The GraphQL API takes the personal key **raw — no `Bearer` prefix**: `Authorization: ${LINEAR_API_KEY}`. (The `Bearer` prefix is only for the MCP / OAuth transport; sending it to the GraphQL API fails.) Create the key at Linear → Settings → Security & access → API, scoped to this workspace's team and restricted to the operations the loop performs (read issues, update issue state). The loop acts as _you_. The concrete list/view/close commands live in `.sandcastle/*.md` — see [Headless commands](#headless-commands-sandcastle).
     - _If you later want the loop to post as a distinct bot identity, swap in an app-actor token — it doesn't consume a Linear seat, but requires creating an OAuth application. Not needed for solo use._
 
-**Secrets vs. routing.** `LINEAR_API_KEY` is a secret consumed by the MCP transport layer — it lives only in the orchestrator's env (e.g. sandcastle's `.sandcastle/.env`), never in this committed file, and the agent never reads it directly. The **Target** below is non-secret routing the agent _does_ read, so it lives here in the repo.
+**Secrets vs. routing.** `LINEAR_API_KEY` is a secret consumed by the MCP transport layer — it lives only in the orchestrator's env (the gitignored `.sandcastle/.env`), never in a committed file, and the agent never reads it directly. The non-secret routing the loop _does_ read — team, project, workflow-state UUIDs, and gate labels — lives in the committed **`.sandcastle/linear.env`**, the single source of truth for those values. `main.ts` parses it and injects it as the sandbox-provider env, so the headless prompts can interpolate `$LINEAR_*` in their `curl`/`jq` shell blocks exactly as they already do `$LINEAR_API_KEY`. The **Target** below and the [Headless commands](#headless-commands-sandcastle) describe how those values are used; the values themselves come from `linear.env`.
 
 > sandcastle caveat: it throws if the agent-provider `env` and sandbox-provider `env` share a key. Put `LINEAR_API_KEY` in exactly one of them.
 
@@ -23,12 +23,12 @@ Inside the sandcastle sandbox there is **no MCP** — the plan/implement/merge p
 
 All three POST to `https://api.linear.app/graphql` with `Authorization: $LINEAR_API_KEY` (raw, no `Bearer`) and `Content-Type: application/json`, piping through `jq`.
 
-- **List** (in `plan-prompt.md`) — open, agent-ready, **unblocked** issues in the project, as a JSON array of `{id, title, body}`. The API filter selects `project == Happy Harmony`, label `ready-for-agent`, and workflow-state type **not** `completed`/`canceled`; the query also pulls each candidate's own labels plus its blocking relations so `jq` can apply two gates the `issueFilter` can't express:
+- **List** (in `plan-prompt.md`) — open, agent-ready, **unblocked** issues in the project, as a JSON array of `{id, title, body}`. The API filter selects `project == Happy Harmony`, the ready-gate label, and workflow-state type **not** `completed`/`canceled`; the query also pulls each candidate's own labels plus its blocking relations so `jq` can apply two gates the `issueFilter` can't express. The project id and both gate labels are interpolated from `.sandcastle/linear.env` (`$LINEAR_PROJECT_ID`, `$LINEAR_READY_LABEL`, `$LINEAR_HOLD_LABEL`) — the shape is:
 
     ```
     query { issues(first: 250, filter: {
-      project: { id: { eq: "e083d04b-0285-472e-9316-7115a505d2c3" } },
-      labels:  { name: { eq: "ready-for-agent" } },
+      project: { id: { eq: "$LINEAR_PROJECT_ID" } },
+      labels:  { name: { eq: "$LINEAR_READY_LABEL" } },     # ready-for-agent
       state:   { type: { nin: ["completed", "canceled"] } }
     }) { nodes {
       identifier title description
@@ -45,7 +45,7 @@ All three POST to `https://api.linear.app/graphql` with `Authorization: $LINEAR_
 
 - **View `<ID>`** (in `implement-prompt.md`) — `query { issue(id: "<ID>") { ... } }`. Linear's `issue(id:)` accepts the human identifier (`JANDES-123`) as well as the UUID.
 
-- **Close `<ID>`** (in `merge-prompt.md`) — `mutation { issueUpdate(id: "<ID>", input: { stateId: "4e87981d-b4ee-41d0-9a39-4d8fd195789a" }) { success } }`. `issueUpdate` needs a **state UUID**, not a type; `4e87981d-…` is team `JANDES`'s `Done` state. For a `wontfix`, swap in the `Canceled` state UUID instead. Re-resolve these via `list_issue_statuses` if the team's workflow changes.
+- **Close `<ID>`** (in `merge-prompt.md`) — `mutation { issueUpdate(id: "<ID>", input: { stateId: "$LINEAR_DONE_STATE_ID" }) { success } }`. `issueUpdate` needs a **state UUID**, not a type; `$LINEAR_DONE_STATE_ID` is team `JANDES`'s `Done` state, interpolated from `.sandcastle/linear.env`. For a `wontfix`, swap in `$LINEAR_CANCELED_STATE_ID` (the `Canceled` state, also recorded there). Re-resolve both via `list_issue_statuses` if the team's workflow changes, and update `linear.env`.
 
 ## Target
 
@@ -53,10 +53,10 @@ Linear addresses issues by **team**, and a git checkout knows nothing about your
 
 ```
 Team: JANDES              # Booshja team; the JANDES-### prefix on issues/branches
-Project: Happy Harmony    # UUID e083d04b-0285-472e-9316-7115a505d2c3 if the name is ambiguous
+Project: Happy Harmony    # see .sandcastle/linear.env for the UUID if the name is ambiguous
 ```
 
-Resolve these by name via `list_teams` / `list_projects`. If a project name is ambiguous, replace `Project:` with the project's UUID.
+Interactively, resolve these by name via `list_teams` / `list_projects`; if a project name is ambiguous, use the project's UUID. The headless loop can't resolve names, so the concrete team key, project UUID and name are pinned in **`.sandcastle/linear.env`** (`$LINEAR_TEAM_KEY`, `$LINEAR_PROJECT_ID`, `$LINEAR_PROJECT_NAME`) — that committed file is the single source of truth; keep it in sync if the target ever moves.
 
 ## Conventions
 

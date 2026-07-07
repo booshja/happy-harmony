@@ -21,6 +21,8 @@
 // Or add to package.json:
 //   "scripts": { "sandcastle": "npx tsx .sandcastle/main.ts" }
 
+import { readFileSync } from "node:fs";
+
 import * as sandcastle from "@ai-hero/sandcastle";
 import { docker } from "@ai-hero/sandcastle/sandboxes/docker";
 import { z } from "zod";
@@ -55,6 +57,44 @@ const hooks = {
 const copyToWorktree = ["node_modules"];
 
 // ---------------------------------------------------------------------------
+// Linear routing
+// ---------------------------------------------------------------------------
+
+// Parse a KEY=VALUE env file into a plain object. Skips blanks and `#` comment
+// lines, strips inline `# …` comments and surrounding quotes. Deliberately
+// minimal — just enough for the committed routing file, no extra dependency.
+function parseEnvFile(filePath: string): Record<string, string> {
+    const result: Record<string, string> = {};
+    for (const rawLine of readFileSync(filePath, "utf8").split("\n")) {
+        const line = rawLine.trim();
+        if (line === "" || line.startsWith("#")) continue;
+        const eq = line.indexOf("=");
+        if (eq === -1) continue;
+        const key = line.slice(0, eq).trim();
+        // Strip an inline comment, but only when the value isn't quoted — a `#`
+        // inside a quoted value is data, not a comment.
+        let value = line.slice(eq + 1).trim();
+        if (value.startsWith('"') || value.startsWith("'")) {
+            const quote = value[0];
+            const end = value.indexOf(quote, 1);
+            value = end === -1 ? value.slice(1) : value.slice(1, end);
+        } else {
+            const hash = value.indexOf("#");
+            if (hash !== -1) value = value.slice(0, hash).trim();
+        }
+        if (key !== "") result[key] = value;
+    }
+    return result;
+}
+
+// Non-secret Linear routing (team, project, workflow-state UUIDs, gate labels)
+// the headless prompts interpolate as `$LINEAR_*` in their curl/jq shell blocks.
+// Injected as the sandbox-provider env below so it lands in the same sandbox
+// environment as the auto-loaded secret LINEAR_API_KEY. Keep this OFF the
+// agent-provider env — sandcastle throws if a key appears in both.
+const linearEnv = parseEnvFile("./.sandcastle/linear.env");
+
+// ---------------------------------------------------------------------------
 // Main loop
 // ---------------------------------------------------------------------------
 
@@ -72,7 +112,7 @@ for (let iteration = 1; iteration <= MAX_ITERATIONS; iteration++) {
     // -------------------------------------------------------------------------
     const plan = await sandcastle.run({
         hooks,
-        sandbox: docker(),
+        sandbox: docker({ env: linearEnv }),
         name: "planner",
         // One iteration is enough: the planner just needs to read and reason,
         // not write code. (Structured output requires maxIterations: 1.)
@@ -113,7 +153,7 @@ for (let iteration = 1; iteration <= MAX_ITERATIONS; iteration++) {
         issues.map(async (issue) => {
             const sandbox = await sandcastle.createSandbox({
                 branch: issue.branch,
-                sandbox: docker(),
+                sandbox: docker({ env: linearEnv }),
                 hooks,
                 copyToWorktree,
             });
@@ -205,7 +245,7 @@ for (let iteration = 1; iteration <= MAX_ITERATIONS; iteration++) {
     // -------------------------------------------------------------------------
     await sandcastle.run({
         hooks,
-        sandbox: docker(),
+        sandbox: docker({ env: linearEnv }),
         name: "merger",
         maxIterations: 1,
         agent: sandcastle.claudeCode("claude-opus-4-8"),

@@ -4,7 +4,7 @@ Here are the open issues in the repo:
 
 <issues-json>
 
-!`curl -sS -X POST https://api.linear.app/graphql -H "Authorization: $LINEAR_API_KEY" -H "Content-Type: application/json" --data '{"query":"query { issues(first: 250, filter: { project: { id: { eq: \"e083d04b-0285-472e-9316-7115a505d2c3\" } }, labels: { name: { eq: \"ready-for-agent\" } }, state: { type: { nin: [\"completed\", \"canceled\"] } } }) { nodes { identifier title description labels { nodes { name } } inverseRelations { nodes { type issue { state { type } } } } } } }"}' | jq '[.data.issues.nodes[] | select(any(.labels.nodes[]?.name; . == "do-not-proceed") | not) | select([.inverseRelations.nodes[] | select(.type == "blocks") | .issue.state.type | (. == "completed" or . == "canceled")] | all) | {id: .identifier, title: .title, body: .description}]'`
+!`curl -sS -X POST https://api.linear.app/graphql -H "Authorization: $LINEAR_API_KEY" -H "Content-Type: application/json" --data '{"query":"query { issues(first: 250, filter: { project: { id: { eq: \"'"$LINEAR_PROJECT_ID"'\" } }, labels: { name: { eq: \"'"$LINEAR_READY_LABEL"'\" } }, state: { type: { nin: [\"completed\", \"canceled\"] } } }) { nodes { identifier title description labels { nodes { name } } inverseRelations { nodes { type issue { state { type } } } } } } }"}' | jq '[.data.issues.nodes[] | select(any(.labels.nodes[]?.name; . == "'"$LINEAR_HOLD_LABEL"'") | not) | select([.inverseRelations.nodes[] | select(.type == "blocks") | .issue.state.type | (. == "completed" or . == "canceled")] | all) | {id: .identifier, title: .title, body: .description}]'`
 
 </issues-json>
 

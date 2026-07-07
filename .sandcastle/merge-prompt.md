@@ -17,7 +17,7 @@ After all branches are merged, make a single commit summarizing the merge.
 
 For each branch that was merged, close its issue by substituting the issue's identifier for `<ID>` in the following command:
 
-`curl -sS -X POST https://api.linear.app/graphql -H "Authorization: $LINEAR_API_KEY" -H "Content-Type: application/json" --data '{"query":"mutation { issueUpdate(id: \"<ID>\", input: { stateId: \"4e87981d-b4ee-41d0-9a39-4d8fd195789a\" }) { success issue { identifier state { name } } } }"}' | jq '.data.issueUpdate'`
+`curl -sS -X POST https://api.linear.app/graphql -H "Authorization: $LINEAR_API_KEY" -H "Content-Type: application/json" --data '{"query":"mutation { issueUpdate(id: \"<ID>\", input: { stateId: \"'"$LINEAR_DONE_STATE_ID"'\" }) { success issue { identifier state { name } } } }"}' | jq '.data.issueUpdate'`
 
 Here are all the issues:
 
