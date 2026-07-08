@@ -18,7 +18,7 @@ If no DSN is set, Sentry stays disabled. You don't need to add anything for erro
 
 ## Server functions are instrumented automatically
 
-Do **not** hand-wrap a `createServerFn` handler in a Sentry span. `src/app/global-middleware.ts` installs a global `functionMiddleware` that wraps **every** server function in a `Sentry.startSpan` named by its `functionId` (op `server.fn.<method>`). Adding your own span around a server function just double-instruments it.
+Do **not** hand-wrap a `createServerFn` handler in a Sentry span. `src/app/global-middleware.ts` installs a global `functionMiddleware` that wraps **every** server function in a `Sentry.startSpan` named by its `serverFnMeta.id` (op `server.fn.<method>`). Adding your own span around a server function just double-instruments it.
 
 ## Manual spans (for arbitrary hot operations)
 
