@@ -3,7 +3,7 @@
 ## Prereqs
 
 - Node 22 (see `.node-version` / `.nvmrc`)
-- pnpm 9 via `corepack enable` (CI uses pnpm/action-setup)
+- pnpm 10.11.0 — pinned via the `packageManager` field in `package.json` (CI's pnpm/action-setup and `corepack enable` both read it)
 
 ## Setup
 
