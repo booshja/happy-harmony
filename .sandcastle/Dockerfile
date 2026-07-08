@@ -7,6 +7,13 @@ RUN apt-get update && apt-get install -y \
   jq \
   && rm -rf /var/lib/apt/lists/*
 
+# Package manager: pnpm (hard-require for this repo). Install the pinned version
+# globally as root so it lands in /usr/local/bin — on PATH for the agent user.
+# Keep this version in sync with package.json's `packageManager` field, which is
+# the single source of truth (CI's pnpm/action-setup reads it, no `version:` pin).
+# The onSandboxReady hook then runs `pnpm install --frozen-lockfile` for lockfile fidelity.
+RUN npm install -g pnpm@10.11.0
+
 # Issue tracker: Linear. No CLI to install — the plan/implement/merge prompts
 # query the Linear GraphQL API (https://api.linear.app/graphql) directly with
 # curl + jq (both installed above), authenticated via the LINEAR_API_KEY env var

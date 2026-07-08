@@ -37,7 +37,7 @@ If applicable, use RGR to complete the task.
 
 # FEEDBACK LOOPS
 
-Before committing, run `npm run typecheck` and `npm run test` to ensure the tests pass.
+Before committing, run `pnpm run check` (typecheck + lint + test) to ensure everything passes — this matches the bar CI and the issue acceptance criteria enforce.
 
 # COMMIT
 
