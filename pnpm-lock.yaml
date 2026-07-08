@@ -59,9 +59,6 @@ importers:
       drizzle-orm:
         specifier: ^0.45.2
         version: 0.45.2(@cloudflare/workers-types@4.20260109.0)(@opentelemetry/api@1.9.1)(@types/pg@8.15.6)(kysely@0.29.2)
-      eslint:
-        specifier: link:@tanstack/config/eslint
-        version: 9.36.0(jiti@2.7.0)
       eslint-plugin-react:
         specifier: ^7.37.5
         version: 7.37.5(eslint@9.36.0(jiti@2.7.0))
@@ -141,6 +138,9 @@ importers:
       drizzle-kit:
         specifier: ^0.31.8
         version: 0.31.8
+      eslint:
+        specifier: ^9.36.0
+        version: 9.36.0(jiti@2.7.0)
       eslint-config-prettier:
         specifier: ^10.1.8
         version: 10.1.8(eslint@9.36.0(jiti@2.7.0))
@@ -8347,7 +8347,7 @@ snapshots:
       '@humanfs/node': 0.16.7
       '@humanwhocodes/module-importer': 1.0.1
       '@humanwhocodes/retry': 0.4.3
-      '@types/estree': 1.0.8
+      '@types/estree': 1.0.9
       '@types/json-schema': 7.0.15
       ajv: 6.15.0
       chalk: 4.1.2
@@ -8357,7 +8357,7 @@ snapshots:
       eslint-scope: 8.4.0
       eslint-visitor-keys: 4.2.1
       espree: 10.4.0
-      esquery: 1.6.0
+      esquery: 1.7.0
       esutils: 2.0.3
       fast-deep-equal: 3.1.3
       file-entry-cache: 8.0.0
