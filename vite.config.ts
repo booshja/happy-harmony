@@ -110,7 +110,14 @@ export default defineConfig((configEnv) => {
             globals: true,
             environment: "jsdom",
             setupFiles: ["./vitest.setup.ts"],
-            exclude: ["e2e/**/*", "node_modules/**/*", "dist/**/*"],
+            exclude: [
+                "e2e/**/*",
+                "node_modules/**/*",
+                "dist/**/*",
+                // Integration tests run in workerd via vitest.workers.config.ts,
+                // not in this jsdom project.
+                "test/integration/**/*",
+            ],
         },
     };
 
