@@ -28,6 +28,32 @@ describe("category repository — per-user isolation on real D1", () => {
         expect(listB.map((c) => c.name)).toEqual(["B's category"]);
     });
 
+    it("list() never surfaces another user's Categories, even with several each", async () => {
+        // T4 acceptance: user A's list never includes user B's Categories. Both
+        // users own multiple rows so a leak would be unmistakable, not a coincidence
+        // of a single-row set.
+        const db = createTestDb();
+        const { userA, userB } = await seedTwoUsers(db);
+
+        const reposA = createCategoryRepository(db, userA.id);
+        const reposB = createCategoryRepository(db, userB.id);
+
+        await reposA.create({ name: "A one" });
+        await reposA.create({ name: "A two" });
+        await reposB.create({ name: "B one" });
+        await reposB.create({ name: "B two" });
+        await reposB.create({ name: "B three" });
+
+        const listA = await reposA.list();
+        const namesA = listA.map((c) => c.name);
+
+        expect(namesA).toHaveLength(2);
+        expect(namesA).toEqual(expect.arrayContaining(["A one", "A two"]));
+        expect(namesA).not.toContain("B one");
+        expect(namesA).not.toContain("B two");
+        expect(namesA).not.toContain("B three");
+    });
+
     it("cannot read B's row by crafting a direct displayId lookup", async () => {
         const db = createTestDb();
         const { userA, userB } = await seedTwoUsers(db);
