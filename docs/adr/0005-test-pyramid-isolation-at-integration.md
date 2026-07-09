@@ -26,3 +26,14 @@ boundary, and E2E carries only a single representative isolation smoke.
   every slice that adds a scoped server function, plus one E2E smoke.
 - Tests written along the way give regression safety, avoid an end-of-project test
   death march, and serve as documentation of intended behavior.
+
+## Design-review refinement
+
+The `db` injection seam stops at the repository factory. The isolation matrix
+constructs `createCategoryRepository(testDb, userId)` directly and asserts
+cross-user isolation — it does **not** go through `withRepos` or a server
+function. So `db` is injected at the factory (its two real implementations —
+prod D1 and the test DB — justify the seam), while `withRepos` calls `getDb()`
+internally and stays clean. We do **not** thread an optional test-only `db`
+through `withRepos`; the full-stack server-function path stays in the deliberately
+thin E2E layer.
