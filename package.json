@@ -41,7 +41,10 @@
         "db:migrate": "wrangler d1 migrations apply DB --local",
         "db:migrate:staging": "wrangler d1 migrations apply DB --env staging --remote",
         "db:seed": "wrangler d1 execute DB --local --file=./drizzle/seeds/seed.sql",
-        "db:reset": "rm -rf .wrangler/state/v3/d1 && pnpm db:migrate"
+        "db:reset": "rm -rf .wrangler/state/v3/d1 && pnpm db:migrate",
+        "sandcastle": "pnpm exec tsx .sandcastle/main.ts",
+        "sandcastle:bg": "mkdir -p .sandcastle/logs; LOG=.sandcastle/logs/loop-$(date +%Y%m%d-%H%M%S).log; nohup pnpm run sandcastle >\"$LOG\" 2>&1 & echo \"Sandcastle loop started (PID $!) - tail -f $LOG\"",
+        "sandcastle:logs:clean": "find .sandcastle/logs -name '*.log' -mtime +14 -delete 2>/dev/null; echo 'Pruned Sandcastle logs older than 14 days.'"
     },
     "dependencies": {
         "@cloudflare/vite-plugin": "^1.43.0",
