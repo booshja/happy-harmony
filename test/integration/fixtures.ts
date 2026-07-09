@@ -63,9 +63,10 @@ export async function seedTwoUsers(db: TestDb = createTestDb()): Promise<SeededU
     const now = new Date();
     const userA = makeUser("a", now);
     const userB = makeUser("b", now);
+    const users = [userA, userB];
 
     await db.insert(schema.user).values(
-        [userA, userB].map((user) => ({
+        users.map((user) => ({
             id: user.id,
             name: user.name,
             email: user.email,
@@ -76,7 +77,7 @@ export async function seedTwoUsers(db: TestDb = createTestDb()): Promise<SeededU
     );
 
     await db.insert(schema.session).values(
-        [userA, userB].map((user) => ({
+        users.map((user) => ({
             id: user.session.id,
             token: user.session.token,
             userId: user.session.userId,
