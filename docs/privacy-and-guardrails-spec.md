@@ -118,13 +118,20 @@ May send to Sentry **only if all content is scrubbed** (see next section):
 
 ### Required scrubbing/redaction
 
+Scrubbing is **allowlist / fail-closed**, not denylist — see ADR 0006. The
+content-bearing containers of an event are treated as sensitive by default; a
+value survives only if its key is explicitly allow-listed. This fails closed: a
+field the code adds later that nobody anticipated leaks nothing by default.
+
 Before any event leaves the app:
 
-- Remove or redact fields by key name match (case-insensitive):
+- **Allowlist the content-bearing containers** — in `extra`, `contexts`, `tags`,
+  `request.data` / `request.body`, and breadcrumb `data` payloads, drop every key
+  except an explicit safe set:
+    - request id, route template, coarse error code, environment, `user-agent`
+- **Redundant second layer** — also redact by key name match (case-insensitive),
+  even inside allow-listed containers:
     - `title`, `note`, `notes`, `category`, `categories`, `suggestion`, `content`, `message` (when it can hold user input), `email`
-- Redact known sensitive locations:
-    - breadcrumbs data payloads
-    - `request.data`, `request.body`, `extra`, `contexts`, `tags` (ensure tags don’t include content)
 - Ensure URLs are normalized:
     - store `/api/activities/:id` not `/api/activities/4d2f...`
 

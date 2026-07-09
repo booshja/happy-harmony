@@ -55,3 +55,15 @@ principle (strong per-user isolation, minimal logging, no user content to third
 parties) while deliberately **not** pursuing formal HIPAA compliance. Happy
 Harmony is not a covered entity and integrates with no health systems.
 _Avoid_: Compliant, HIPAA-compliant, regulated.
+
+**Opaque External Identity**:
+Every user-owned row carries two identities: an internal autoincrement integer
+`id` used only for storage and foreign-key joins, never crossing a wire or
+interface; and an opaque `displayId` that is the sole identity exposed externally
+(responses, URLs, logs, Sentry). The Repository Choke Point speaks `displayId`
+exclusively and mints it on create; the numeric `id` is module-private. This is
+**defense-in-depth and enumeration-prevention**, not the authorization boundary —
+per ADR 0003 unguessability is _not_ treated as authorization; the
+`WHERE userId = caller` scope is. A leaked or logged `displayId` reveals nothing
+and cannot be enumerated, and sequential counts never leak.
+_Avoid_: Public id, slug, UUID (as an authz mechanism), obscured id.
