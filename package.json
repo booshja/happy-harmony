@@ -42,7 +42,8 @@
         "db:migrate:staging": "wrangler d1 migrations apply DB --env staging --remote",
         "db:seed": "wrangler d1 execute DB --local --file=./drizzle/seeds/seed.sql",
         "db:reset": "rm -rf .wrangler/state/v3/d1 && pnpm db:migrate",
-        "sandcastle": "pnpm exec tsx .sandcastle/main.ts",
+        "sandcastle": "pnpm run sandcastle:build-image && pnpm exec tsx .sandcastle/main.ts",
+        "sandcastle:build-image": "pnpm exec sandcastle docker build-image --image-name sandcastle:happy-harmony --dockerfile .sandcastle/Dockerfile",
         "sandcastle:bg": "mkdir -p .sandcastle/logs; LOG=.sandcastle/logs/loop-$(date +%Y%m%d-%H%M%S).log; nohup pnpm run sandcastle >\"$LOG\" 2>&1 & echo \"Sandcastle loop started (PID $!) - tail -f $LOG\"",
         "sandcastle:logs:clean": "find .sandcastle/logs -name '*.log' -mtime +14 -delete 2>/dev/null; echo 'Pruned Sandcastle logs older than 14 days.'"
     },

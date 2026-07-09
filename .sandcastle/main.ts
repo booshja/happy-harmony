@@ -21,7 +21,9 @@
 // Or add to package.json:
 //   "scripts": { "sandcastle": "npx tsx .sandcastle/main.ts" }
 
-import { readFileSync } from "node:fs";
+import { mkdirSync, readFileSync } from "node:fs";
+import { homedir } from "node:os";
+import { basename, join } from "node:path";
 
 import * as sandcastle from "@ai-hero/sandcastle";
 import { docker } from "@ai-hero/sandcastle/sandboxes/docker";
@@ -49,9 +51,55 @@ const MAX_ITERATIONS = 10;
 // `pnpm install --frozen-lockfile` keeps the sandbox in sync with the committed
 // pnpm-lock.yaml (this repo is pnpm-only; a plain `npm install` would ignore the
 // lockfile and re-resolve from ranges).
+//
+// `--store-dir` pins the pnpm content-addressable store to a container-local
+// path. Without it, pnpm resolves the store from ambient config — and a local,
+// gitignored `pnpm-workspace.yaml` on the host may carry an absolute host
+// `storeDir` (e.g. /Users/<you>/Library/pnpm/store) into the Linux sandbox,
+// where the non-root agent user can't create it (EACCES → install exits 243).
+//
+// `--store-dir` also targets the persistent, per-project store bind-mounted
+// below (see `mounts`), so the store survives across sandboxes.
+//
+// `timeoutMs` overrides the 60s hook default: the FIRST run against a cold store
+// hydrates the whole dependency tree from the network (~45s+ for this tree),
+// which overran 60s. Once the store is warm, reconciling the copied node_modules
+// takes ~1s — the timeout is headroom for that first cold run.
 const hooks = {
-    sandbox: { onSandboxReady: [{ command: "pnpm install --frozen-lockfile" }] },
+    sandbox: {
+        onSandboxReady: [
+            {
+                command:
+                    "pnpm install --frozen-lockfile --store-dir /home/agent/.pnpm-store",
+                timeoutMs: 300_000,
+            },
+        ],
+    },
 };
+
+// ---------------------------------------------------------------------------
+// Persistent pnpm store (per project)
+// ---------------------------------------------------------------------------
+
+// Bind-mount a host directory as the sandbox pnpm store so it persists and warms
+// across runs. Without this, every sandbox starts cold and re-fetches the full
+// dependency tree from the network. Scoped by the working-directory name so each
+// project keeps its own store — unrelated repos can't share or corrupt one another's.
+const pnpmStoreHostPath = join(
+    homedir(),
+    ".cache",
+    "sandcastle",
+    basename(process.cwd()),
+    "pnpm-store",
+);
+// The docker provider fails sandbox creation if a mount's hostPath is missing.
+mkdirSync(pnpmStoreHostPath, { recursive: true });
+
+// Mount the host store at the container path the hook passes to `--store-dir`.
+// Reused by every docker() sandbox below so they share one warm store.
+const mounts = [
+    { hostPath: pnpmStoreHostPath, sandboxPath: "/home/agent/.pnpm-store" },
+];
 
 // Copy node_modules from the host into the worktree before each sandbox
 // starts. Avoids a full install from scratch; the hook above reconciles it
@@ -114,7 +162,7 @@ for (let iteration = 1; iteration <= MAX_ITERATIONS; iteration++) {
     // -------------------------------------------------------------------------
     const plan = await sandcastle.run({
         hooks,
-        sandbox: docker({ env: linearEnv }),
+        sandbox: docker({ env: linearEnv, mounts }),
         name: "planner",
         // One iteration is enough: the planner just needs to read and reason,
         // not write code. (Structured output requires maxIterations: 1.)
@@ -155,7 +203,7 @@ for (let iteration = 1; iteration <= MAX_ITERATIONS; iteration++) {
         issues.map(async (issue) => {
             const sandbox = await sandcastle.createSandbox({
                 branch: issue.branch,
-                sandbox: docker({ env: linearEnv }),
+                sandbox: docker({ env: linearEnv, mounts }),
                 hooks,
                 copyToWorktree,
             });
@@ -247,7 +295,7 @@ for (let iteration = 1; iteration <= MAX_ITERATIONS; iteration++) {
     // -------------------------------------------------------------------------
     await sandcastle.run({
         hooks,
-        sandbox: docker({ env: linearEnv }),
+        sandbox: docker({ env: linearEnv, mounts }),
         name: "merger",
         maxIterations: 1,
         agent: sandcastle.claudeCode("claude-opus-4-8"),
