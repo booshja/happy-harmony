@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 import CategoryList from "../components/CategoryList";
+import CreateActivityForm from "../components/CreateActivityForm";
 import CreateCategoryForm from "../components/CreateCategoryForm";
 
 export const Route = createFileRoute("/_authenticated/")({
@@ -16,6 +17,7 @@ function HomePage() {
             {session?.user && <p>Welcome, {session.user.name}!</p>}
             <CreateCategoryForm />
             <CategoryList />
+            <CreateActivityForm />
         </div>
     );
 }

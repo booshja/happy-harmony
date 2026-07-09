@@ -1,0 +1,98 @@
+import { and, eq } from "drizzle-orm";
+import type { DrizzleD1Database } from "drizzle-orm/d1";
+
+import type * as schema from "../db/schema";
+import { activity, category } from "../db/schema";
+import { generateDisplayId } from "../lib/displayId";
+
+// Accept any Drizzle D1 client bound to this schema. `db` is a parameter, not an
+// internal getDb() — the injection seam the ADR-0005 integration tests bind to.
+type Db = DrizzleD1Database<typeof schema>;
+
+export interface CreateActivityInput {
+    categoryDisplayId: string;
+    title: string;
+}
+
+// The repository speaks `displayId` exclusively; the internal integer `id` and the
+// tenancy `userId` never cross this interface (Opaque External Identity, ADR-0003).
+// `categoryDisplayId` is the parent Category's opaque identity — the internal
+// `categoryId` link stays hidden.
+export interface ActivityDto {
+    categoryDisplayId: string;
+    createdAt: Date;
+    displayId: string;
+    title: string;
+    updatedAt: Date;
+}
+
+/**
+ * Raised when the target parent Category does not belong to the caller (or does not
+ * exist — the two are indistinguishable by design, closing the enumeration oracle,
+ * ADR-0003). The message is content-free: it never echoes user input.
+ */
+export class ParentCategoryNotFoundError extends Error {
+    constructor() {
+        super("Category not found");
+        this.name = "ParentCategoryNotFoundError";
+    }
+}
+
+/**
+ * The Repository Choke Point for Activities (ADR-0003). Bind `userId` exactly once
+ * at construction; every query is scoped `WHERE userId = boundUserId`, so the
+ * authorization boundary lives here and nowhere else. Call sites cannot obtain a
+ * repository without passing the `requireUser()` gate (see `withRepos`).
+ */
+export function createActivityRepository(db: Db, userId: string) {
+    return {
+        /**
+         * Insert an Activity owned by the bound user under one of the caller's own
+         * Categories; mints the displayId. Enforces the parent-ownership boundary:
+         * the target Category is resolved `WHERE userId = caller`, so a Category the
+         * caller does not own is invisible and the create is rejected with
+         * `ParentCategoryNotFoundError` — the boundary holds server-side, never
+         * trusting the client-supplied parent id.
+         */
+        async create(input: CreateActivityInput): Promise<ActivityDto> {
+            const [parent] = await db
+                .select({ id: category.id, displayId: category.displayId })
+                .from(category)
+                .where(
+                    and(
+                        eq(category.userId, userId),
+                        eq(category.displayId, input.categoryDisplayId),
+                    ),
+                );
+            if (!parent) {
+                throw new ParentCategoryNotFoundError();
+            }
+
+            const now = new Date();
+            const [row] = await db
+                .insert(activity)
+                .values({
+                    categoryId: parent.id,
+                    createdAt: now,
+                    displayId: generateDisplayId(),
+                    name: input.title,
+                    updatedAt: now,
+                    userId,
+                })
+                .returning();
+            if (!row) {
+                // Content-free: never echo user input into an error message.
+                throw new Error("Failed to create activity");
+            }
+            return {
+                categoryDisplayId: parent.displayId,
+                createdAt: row.createdAt,
+                displayId: row.displayId,
+                title: row.name,
+                updatedAt: row.updatedAt,
+            };
+        },
+    };
+}
+
+export type ActivityRepository = ReturnType<typeof createActivityRepository>;

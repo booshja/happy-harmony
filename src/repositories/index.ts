@@ -1,6 +1,7 @@
 import { requireUser } from "../auth/requireUser";
 import { getDb } from "../db";
 
+import { createActivityRepository } from "./activityRepository";
 import { createCategoryRepository } from "./categoryRepository";
 
 /**
@@ -14,6 +15,7 @@ export async function withRepos() {
     const db = getDb();
     return {
         repos: {
+            activities: createActivityRepository(db, user.id),
             categories: createCategoryRepository(db, user.id),
         },
         user,
