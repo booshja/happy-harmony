@@ -2,6 +2,8 @@ import * as Sentry from "@sentry/tanstackstart-react";
 
 import { getRuntimeEnv } from "../config/runtimeEnv";
 
+import { scrubBreadcrumb, scrubEvent } from "./sentry-scrub";
+
 const runtimeEnv = getRuntimeEnv();
 
 const envRecord = process.env as Record<string, string | undefined>;
@@ -17,6 +19,12 @@ if (runtimeEnv.SENTRY_DSN) {
         tracesSampleRate,
         profilesSampleRate,
         environment,
+        // Rigor Level A (ADR-0004): never attach default PII (bodies, IPs), and
+        // fail-closed scrub every event / breadcrumb before it leaves the app
+        // (ADR-0006). User-typed content must not reach Sentry.
+        sendDefaultPii: false,
+        beforeSend: (event) => scrubEvent(event) as Sentry.ErrorEvent,
+        beforeBreadcrumb: (breadcrumb) => scrubBreadcrumb(breadcrumb),
     });
 }
 
