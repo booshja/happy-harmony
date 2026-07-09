@@ -92,6 +92,28 @@ export function createActivityRepository(db: Db, userId: string) {
                 updatedAt: row.updatedAt,
             };
         },
+
+        /**
+         * All Activities owned by the bound user — never another user's rows. Each
+         * carries its parent Category's `displayId` (never the internal link) so the
+         * caller can group Activities under their Category. The inner join is safe
+         * for isolation: every Activity is scoped `WHERE userId = caller`, and its
+         * parent was itself resolved under the caller at create time.
+         */
+        async list(): Promise<Array<ActivityDto>> {
+            const rows = await db
+                .select({
+                    categoryDisplayId: category.displayId,
+                    createdAt: activity.createdAt,
+                    displayId: activity.displayId,
+                    title: activity.name,
+                    updatedAt: activity.updatedAt,
+                })
+                .from(activity)
+                .innerJoin(category, eq(activity.categoryId, category.id))
+                .where(eq(activity.userId, userId));
+            return rows;
+        },
     };
 }
 

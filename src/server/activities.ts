@@ -20,3 +20,18 @@ export const createActivity = createServerFn({ method: "POST" })
             categoryDisplayId: data.categoryDisplayId,
         });
     });
+
+/**
+ * `listActivities` RPC (ADR-0003). A session-scoped read through the Repository
+ * Choke Point: `withRepos()` derives `userId` from the authenticated session and
+ * the repository scopes every query `WHERE activity.userId = caller`, so the list
+ * can only ever contain the caller's own Activities — never another user's. Each
+ * carries its parent Category's `displayId` for grouping. No input to validate;
+ * the empty list is a valid, friendly result (no Activities yet).
+ */
+export const listActivities = createServerFn({ method: "GET" }).handler(
+    async () => {
+        const { repos } = await withRepos();
+        return repos.activities.list();
+    },
+);

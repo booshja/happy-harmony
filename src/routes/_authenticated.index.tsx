@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 
+import ActivityList from "../components/ActivityList";
 import CategoryList from "../components/CategoryList";
 import CreateActivityForm from "../components/CreateActivityForm";
 import CreateCategoryForm from "../components/CreateCategoryForm";
@@ -18,6 +19,7 @@ function HomePage() {
             <CreateCategoryForm />
             <CategoryList />
             <CreateActivityForm />
+            <ActivityList />
         </div>
     );
 }

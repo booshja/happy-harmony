@@ -104,3 +104,73 @@ describe("activity repository — parent-ownership on real D1", () => {
         ).rejects.toBeInstanceOf(ParentCategoryNotFoundError);
     });
 });
+
+// T6 acceptance / user story 6: the caller sees the Activities they own, grouped
+// under their Category, and never another user's. Bound at the same choke point the
+// isolation matrix owns (ADR-0005), proven against real D1.
+describe("activity repository — list() per-user isolation on real D1", () => {
+    it("returns the caller's Activities with their parent Category's displayId", async () => {
+        const db = createTestDb();
+        const { userA } = await seedTwoUsers(db);
+
+        const parent = await createCategoryRepository(db, userA.id).create({
+            name: "A's category",
+        });
+        const reposA = createActivityRepository(db, userA.id);
+        await reposA.create({
+            title: "Read a book",
+            categoryDisplayId: parent.displayId,
+        });
+        await reposA.create({
+            title: "Go for a walk",
+            categoryDisplayId: parent.displayId,
+        });
+
+        const list = await reposA.list();
+
+        expect(list.map((a) => a.title)).toEqual(
+            expect.arrayContaining(["Read a book", "Go for a walk"]),
+        );
+        expect(list).toHaveLength(2);
+        for (const item of list) {
+            expect(item.categoryDisplayId).toBe(parent.displayId);
+        }
+    });
+
+    it("list() never surfaces another user's Activities, even with several each", async () => {
+        const db = createTestDb();
+        const { userA, userB } = await seedTwoUsers(db);
+
+        const aParent = await createCategoryRepository(db, userA.id).create({
+            name: "A cat",
+        });
+        const bParent = await createCategoryRepository(db, userB.id).create({
+            name: "B cat",
+        });
+        const reposA = createActivityRepository(db, userA.id);
+        const reposB = createActivityRepository(db, userB.id);
+
+        await reposA.create({ title: "A one", categoryDisplayId: aParent.displayId });
+        await reposA.create({ title: "A two", categoryDisplayId: aParent.displayId });
+        await reposB.create({ title: "B one", categoryDisplayId: bParent.displayId });
+        await reposB.create({ title: "B two", categoryDisplayId: bParent.displayId });
+        await reposB.create({ title: "B three", categoryDisplayId: bParent.displayId });
+
+        const titlesA = (await reposA.list()).map((a) => a.title);
+
+        expect(titlesA).toHaveLength(2);
+        expect(titlesA).toEqual(expect.arrayContaining(["A one", "A two"]));
+        expect(titlesA).not.toContain("B one");
+        expect(titlesA).not.toContain("B two");
+        expect(titlesA).not.toContain("B three");
+    });
+
+    it("returns an empty list for a caller with no Activities", async () => {
+        const db = createTestDb();
+        const { userA } = await seedTwoUsers(db);
+
+        const list = await createActivityRepository(db, userA.id).list();
+
+        expect(list).toEqual([]);
+    });
+});

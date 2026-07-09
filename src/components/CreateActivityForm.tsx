@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import type { FormEvent } from "react";
 
@@ -9,6 +9,7 @@ import {
 import { createActivity } from "../server/activities";
 import { listCategories } from "../server/categories";
 
+import { ACTIVITIES_QUERY_KEY } from "./ActivityList";
 import { CATEGORIES_QUERY_KEY } from "./CategoryList";
 
 // Minimal create-Activity UI for a signed-in user (Slice 1). The user picks a parent
@@ -17,6 +18,7 @@ import { CATEGORIES_QUERY_KEY } from "./CategoryList";
 // authorization boundary and re-runs the parent-ownership check; this client-side
 // validation is a courtesy that mirrors the same zod schema, never a substitute.
 export default function CreateActivityForm() {
+    const queryClient = useQueryClient();
     const [title, setTitle] = useState("");
     const [categoryDisplayId, setCategoryDisplayId] = useState("");
     const [error, setError] = useState<string | null>(null);
@@ -51,6 +53,10 @@ export default function CreateActivityForm() {
             const created = await createActivity({ data: parsed.data });
             setCreatedTitle(created.title);
             setTitle("");
+            // Refresh the list so the just-created Activity appears immediately.
+            await queryClient.invalidateQueries({
+                queryKey: ACTIVITIES_QUERY_KEY,
+            });
         } catch {
             // Content-free message: never surface raw errors (which could echo
             // input) to the user or logs.
