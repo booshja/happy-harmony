@@ -35,3 +35,18 @@ export const listActivities = createServerFn({ method: "GET" }).handler(
         return repos.activities.list();
     },
 );
+
+/**
+ * `pickActivity` RPC (ADR-0003) — the "pick one" nudge (PRD JANDES-124, user stories
+ * 7/8/9/10). A session-scoped read through the Repository Choke Point: `withRepos()`
+ * derives `userId` from the authenticated session and the repository draws only from
+ * the caller's own Activities, so selection can never surface another user's content.
+ * Returns one uniformly-random Activity, or `null` when the caller has none — the
+ * friendly "nothing to pick" signal, not an error. No input to validate.
+ */
+export const pickActivity = createServerFn({ method: "GET" }).handler(
+    async () => {
+        const { repos } = await withRepos();
+        return repos.activities.pickRandom();
+    },
+);

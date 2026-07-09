@@ -4,6 +4,7 @@ import ActivityList from "../components/ActivityList";
 import CategoryList from "../components/CategoryList";
 import CreateActivityForm from "../components/CreateActivityForm";
 import CreateCategoryForm from "../components/CreateCategoryForm";
+import PickActivity from "../components/PickActivity";
 
 export const Route = createFileRoute("/_authenticated/")({
     component: HomePage,
@@ -20,6 +21,7 @@ function HomePage() {
             <CategoryList />
             <CreateActivityForm />
             <ActivityList />
+            <PickActivity />
         </div>
     );
 }

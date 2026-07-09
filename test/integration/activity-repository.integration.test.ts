@@ -174,3 +174,63 @@ describe("activity repository — list() per-user isolation on real D1", () => {
         expect(list).toEqual([]);
     });
 });
+
+// T7 acceptance / user stories 7/8/9/10: the "pick one" nudge draws a single random
+// Activity ONLY from the caller's own set. Bound at the same choke point the
+// isolation matrix owns (ADR-0005), proven against real D1 — selection can never
+// surface another user's Activity.
+describe("activity repository — pickRandom() per-user isolation on real D1", () => {
+    it("returns null for a caller with no Activities (nothing to pick, not an error)", async () => {
+        const db = createTestDb();
+        const { userA } = await seedTwoUsers(db);
+
+        const picked = await createActivityRepository(db, userA.id).pickRandom();
+
+        expect(picked).toBeNull();
+    });
+
+    it("returns the sole Activity for a caller with exactly one", async () => {
+        const db = createTestDb();
+        const { userA } = await seedTwoUsers(db);
+
+        const parent = await createCategoryRepository(db, userA.id).create({
+            name: "A's category",
+        });
+        const reposA = createActivityRepository(db, userA.id);
+        const only = await reposA.create({
+            title: "Read a book",
+            categoryDisplayId: parent.displayId,
+        });
+
+        const picked = await reposA.pickRandom();
+
+        expect(picked?.displayId).toBe(only.displayId);
+        expect(picked?.title).toBe("Read a book");
+    });
+
+    it("never picks another user's Activity, even across many draws", async () => {
+        const db = createTestDb();
+        const { userA, userB } = await seedTwoUsers(db);
+
+        const aParent = await createCategoryRepository(db, userA.id).create({
+            name: "A cat",
+        });
+        const bParent = await createCategoryRepository(db, userB.id).create({
+            name: "B cat",
+        });
+        const reposA = createActivityRepository(db, userA.id);
+        const reposB = createActivityRepository(db, userB.id);
+
+        await reposA.create({ title: "A one", categoryDisplayId: aParent.displayId });
+        await reposA.create({ title: "A two", categoryDisplayId: aParent.displayId });
+        await reposB.create({ title: "B one", categoryDisplayId: bParent.displayId });
+        await reposB.create({ title: "B two", categoryDisplayId: bParent.displayId });
+
+        const aTitles = new Set(["A one", "A two"]);
+        for (let i = 0; i < 50; i++) {
+            const picked = await reposA.pickRandom();
+            expect(picked).not.toBeNull();
+            expect(aTitles.has(picked?.title ?? "")).toBe(true);
+        }
+    });
+});

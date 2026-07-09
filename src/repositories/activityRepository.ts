@@ -4,6 +4,7 @@ import type { DrizzleD1Database } from "drizzle-orm/d1";
 import type * as schema from "../db/schema";
 import { activity, category } from "../db/schema";
 import { generateDisplayId } from "../lib/displayId";
+import { pickRandom } from "../lib/pickRandom";
 
 // Accept any Drizzle D1 client bound to this schema. `db` is a parameter, not an
 // internal getDb() — the injection seam the ADR-0005 integration tests bind to.
@@ -45,6 +46,23 @@ export class ParentCategoryNotFoundError extends Error {
  * repository without passing the `requireUser()` gate (see `withRepos`).
  */
 export function createActivityRepository(db: Db, userId: string) {
+    // The single scoped read of the caller's own Activities, shared by `list()` and
+    // `pickRandom()` so both draw from exactly the same `WHERE userId = caller` set —
+    // there is no second, unscoped path selection could leak through.
+    async function listOwned(): Promise<Array<ActivityDto>> {
+        return db
+            .select({
+                categoryDisplayId: category.displayId,
+                createdAt: activity.createdAt,
+                displayId: activity.displayId,
+                title: activity.name,
+                updatedAt: activity.updatedAt,
+            })
+            .from(activity)
+            .innerJoin(category, eq(activity.categoryId, category.id))
+            .where(eq(activity.userId, userId));
+    }
+
     return {
         /**
          * Insert an Activity owned by the bound user under one of the caller's own
@@ -101,18 +119,19 @@ export function createActivityRepository(db: Db, userId: string) {
          * parent was itself resolved under the caller at create time.
          */
         async list(): Promise<Array<ActivityDto>> {
-            const rows = await db
-                .select({
-                    categoryDisplayId: category.displayId,
-                    createdAt: activity.createdAt,
-                    displayId: activity.displayId,
-                    title: activity.name,
-                    updatedAt: activity.updatedAt,
-                })
-                .from(activity)
-                .innerJoin(category, eq(activity.categoryId, category.id))
-                .where(eq(activity.userId, userId));
-            return rows;
+            return listOwned();
+        },
+
+        /**
+         * One uniformly-random Activity from the bound user's own set — the "pick
+         * one" nudge (user stories 7/8/9/10). Draws only from the caller-scoped read
+         * (`WHERE userId = caller`), so another user's Activity can never be picked.
+         * An empty set returns `null` — the friendly "nothing to pick" signal, not an
+         * error. Avoid-repeats / `suggestionHistory` are deferred (out of scope this
+         * slice), so every draw is independent and uniform.
+         */
+        async pickRandom(): Promise<ActivityDto | null> {
+            return pickRandom(await listOwned());
         },
     };
 }
