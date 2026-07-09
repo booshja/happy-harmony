@@ -80,9 +80,7 @@ export const activity = sqliteTable("activity", {
         .references(() => user.id, { onDelete: "cascade" }),
     categoryId: integer("categoryId")
         .notNull()
-        .references(() => category.id, {
-            onDelete: "cascade",
-        }),
+        .references(() => category.id, { onDelete: "cascade" }),
     name: text("name").notNull(),
     description: text("description"),
     duration: text("duration", {
