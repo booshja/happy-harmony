@@ -47,7 +47,7 @@ export class ParentCategoryNotFoundError extends Error {
  */
 export function createActivityRepository(db: Db, userId: string) {
     // The single scoped read of the caller's own Activities, shared by `list()` and
-    // `pickRandom()` so both draw from exactly the same `WHERE userId = caller` set —
+    // `pick()` so both draw from exactly the same `WHERE userId = caller` set —
     // there is no second, unscoped path selection could leak through.
     async function listOwned(): Promise<Array<ActivityDto>> {
         return db
@@ -130,7 +130,7 @@ export function createActivityRepository(db: Db, userId: string) {
          * error. Avoid-repeats / `suggestionHistory` are deferred (out of scope this
          * slice), so every draw is independent and uniform.
          */
-        async pickRandom(): Promise<ActivityDto | null> {
+        async pick(): Promise<ActivityDto | null> {
             return pickRandom(await listOwned());
         },
     };

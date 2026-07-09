@@ -47,6 +47,6 @@ export const listActivities = createServerFn({ method: "GET" }).handler(
 export const pickActivity = createServerFn({ method: "GET" }).handler(
     async () => {
         const { repos } = await withRepos();
-        return repos.activities.pickRandom();
+        return repos.activities.pick();
     },
 );

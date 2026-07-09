@@ -179,12 +179,12 @@ describe("activity repository — list() per-user isolation on real D1", () => {
 // Activity ONLY from the caller's own set. Bound at the same choke point the
 // isolation matrix owns (ADR-0005), proven against real D1 — selection can never
 // surface another user's Activity.
-describe("activity repository — pickRandom() per-user isolation on real D1", () => {
+describe("activity repository — pick() per-user isolation on real D1", () => {
     it("returns null for a caller with no Activities (nothing to pick, not an error)", async () => {
         const db = createTestDb();
         const { userA } = await seedTwoUsers(db);
 
-        const picked = await createActivityRepository(db, userA.id).pickRandom();
+        const picked = await createActivityRepository(db, userA.id).pick();
 
         expect(picked).toBeNull();
     });
@@ -202,7 +202,7 @@ describe("activity repository — pickRandom() per-user isolation on real D1", (
             categoryDisplayId: parent.displayId,
         });
 
-        const picked = await reposA.pickRandom();
+        const picked = await reposA.pick();
 
         expect(picked?.displayId).toBe(only.displayId);
         expect(picked?.title).toBe("Read a book");
@@ -228,7 +228,7 @@ describe("activity repository — pickRandom() per-user isolation on real D1", (
 
         const aTitles = new Set(["A one", "A two"]);
         for (let i = 0; i < 50; i++) {
-            const picked = await reposA.pickRandom();
+            const picked = await reposA.pick();
             expect(picked).not.toBeNull();
             expect(aTitles.has(picked?.title ?? "")).toBe(true);
         }
