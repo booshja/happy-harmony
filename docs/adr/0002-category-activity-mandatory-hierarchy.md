@@ -22,3 +22,13 @@ orphaned activities. We are correcting the schema to `categoryId notNull` with
 - Creating an Activity requires an existing Category **owned by the caller** — see
   ADR 0003's parent-ownership check.
 - A schema migration is required to change `categoryId` to non-null + cascade.
+
+## Migration gating (dev-only relaxation)
+
+The "no schema migrations without approval" rule is **relaxed for dev only**,
+because there is no live data yet. The Slice 1 prefactor migration
+(`drizzle/0001_mixed_gressill.sql` — `categoryId` → non-null + cascade, plus
+relaxing `activity.duration`, `category.description`, and `activity.description`
+to nullable so a name-only / title-only create is possible) was generated and
+applied under this relaxation. This **must be re-gated behind approval before
+the first production data lands**.

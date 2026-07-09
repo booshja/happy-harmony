@@ -67,7 +67,7 @@ export const category = sqliteTable("category", {
         .notNull()
         .references(() => user.id, { onDelete: "cascade" }),
     name: text("name").notNull(),
-    description: text("description").notNull(),
+    description: text("description"),
     createdAt: integer("createdAt", { mode: "timestamp_ms" }).notNull(),
     updatedAt: integer("updatedAt", { mode: "timestamp_ms" }).notNull(),
 });
@@ -78,11 +78,13 @@ export const activity = sqliteTable("activity", {
     userId: text("userId")
         .notNull()
         .references(() => user.id, { onDelete: "cascade" }),
-    categoryId: integer("categoryId").references(() => category.id, {
-        onDelete: "set null",
-    }),
+    categoryId: integer("categoryId")
+        .notNull()
+        .references(() => category.id, {
+            onDelete: "cascade",
+        }),
     name: text("name").notNull(),
-    description: text("description").notNull(),
+    description: text("description"),
     duration: text("duration", {
         enum: [
             "5 min",
@@ -93,7 +95,7 @@ export const activity = sqliteTable("activity", {
             "Half day",
             "Full day",
         ],
-    }).notNull(),
+    }),
     createdAt: integer("createdAt", { mode: "timestamp_ms" }).notNull(),
     updatedAt: integer("updatedAt", { mode: "timestamp_ms" }).notNull(),
 });
